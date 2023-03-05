@@ -1,0 +1,25 @@
+.container-app {
+  height: auto;
+  display: flex;
+  align-items: center;
+  border: 1px solid #9d5bff73;
+  margin-top: 8%;
+  color: #Ffffff;
+  box-shadow: 0 0px 10px #000000;
+  padding: 10px;
+  margin-bottom: 3%;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .container-app {
+    margin-top: 25% !important;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 799px) {
+  .container-app {
+    margin-top: 10% !important;
+  }
+}
+

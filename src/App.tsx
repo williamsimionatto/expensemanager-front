@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Main from "./routes/routes";
 import { Navbar, Sidebar } from "./ui/components";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       />
       <Navbar setIsOpen={setIsOpen} />
       <Sidebar setIsOpen={setIsOpen} isOpen={isOpen} />
+      <Main />
     </>
   );
 }

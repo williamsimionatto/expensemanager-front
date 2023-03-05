@@ -6,9 +6,25 @@ import "./styles.css";
 
 const menuItems = [
   {
-    name: "Settings",
-    icon: "settings",
+    name: "Categories",
+    icon: "category",
+    route: "/categories",
   },
+  {
+    name: "Periods",
+    icon: "date_range",
+    route: "/periods",
+  },
+  {
+    name: "Expenses",
+    icon: "attach_money",
+    route: "/expenses",
+  },
+  {
+    name: "Reports",
+    icon: "bar_chart",
+    route: "/reports",
+  }
 ];
 
 const NavHeader = ({ onClick }: { onClick: VoidFunction }) => (
@@ -30,6 +46,7 @@ export const Sidebar = ({
 
   const handleClick = (item: string) => {
     setActiveItem(item !== activeItem ? item : "");
+    setIsOpen(false);
   };
 
   return (
@@ -43,6 +60,7 @@ export const Sidebar = ({
             icon={item.icon}
             isActive={activeItem === item.name}
             key={item.name}
+            redirectTo={item.route}
           />
         ))}
       </nav>
