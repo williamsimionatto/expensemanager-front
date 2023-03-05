@@ -47,6 +47,10 @@
   color: #ffffff !important;
 }
 
+.button-new:disabled {
+  opacity: 0.5;
+}
+
 .icon:hover {
   color: #ffffff !important;
 }
