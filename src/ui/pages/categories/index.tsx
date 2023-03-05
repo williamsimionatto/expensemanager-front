@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Card, CardContent, TableFooter, TablePagination } from "@mui/material";
+import { Card, CardContent, CircularProgress, TableFooter, TablePagination } from "@mui/material";
 import Button from '@mui/material/Button';
 
 import Table from '@mui/material/Table';
@@ -24,11 +24,17 @@ type Category = {
 
 const CategoriesIndex = () => {
   const [data, setData] = React.useState<Category[]>([])
-
+  const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const [open, setOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, [])
 
   React.useEffect(() => {
     setData([
@@ -105,50 +111,62 @@ const CategoriesIndex = () => {
                 </TableHead>
                 <TableBody>
                   {
+                    loading ? (
+                      <TableRow>
+                        <TableCell colSpan={3} align="center">
+                          <CircularProgress color="secondary" />
+                        </TableCell>
+                      </TableRow>
+                    ) : (
                     (rowsPerPage > 0
-                      ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      : data
-                    ).map(
-                      (row) => (
-                        <TableRow
-                          key={row.id}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                          <TableCell component="th" scope="row" width={100}>
-                            {row.id}
-                          </TableCell>
+                        ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        : data
+                      ).map(
+                        (row) => (
+                          <TableRow
+                            key={row.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell component="th" scope="row" width={100}>
+                              {row.id}
+                            </TableCell>
 
-                          <TableCell component="th" scope="row" width={300}>
-                            {row.name}
-                          </TableCell>
+                            <TableCell component="th" scope="row" width={300}>
+                              {row.name}
+                            </TableCell>
 
-                          <TableCell>{row.description}</TableCell>
-                        </TableRow>
+                            <TableCell>{row.description}</TableCell>
+                          </TableRow>
+                        )
                       )
                     )
                   }
                 </TableBody>
 
-                <TableFooter>
-                  <TableRow>
-                    <TablePagination
-                      rowsPerPageOptions={[10, 15, 30, { label: 'All', value: -1 }]}
-                      colSpan={3}
-                      count={data.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      SelectProps={{
-                        inputProps: {
-                          'aria-label': 'rows per page',
-                        },
-                        native: true,
-                      }}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      ActionsComponent={TablePaginationActions}
-                    />
-                  </TableRow>
-                </TableFooter>
+                {
+                  !loading && (
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          rowsPerPageOptions={[10, 15, 30, { label: 'All', value: -1 }]}
+                          colSpan={3}
+                          count={data.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          SelectProps={{
+                            inputProps: {
+                              'aria-label': 'rows per page',
+                            },
+                            native: true,
+                          }}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                          ActionsComponent={TablePaginationActions}
+                        />
+                      </TableRow>
+                    </TableFooter>
+                  )
+                }
               </Table>
             </TableContainer>
           </CardContent>
