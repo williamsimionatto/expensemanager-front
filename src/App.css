@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.card-header {
+  border-bottom: 1px solid #9d5bff73;
+}
+
+.button-new {
+  border-color: #9d5bff73 !important;
+  background-color: #9d5bff73 !important;
+  color: #ffffff !important;
+}
+
+.icon:hover {
+  color: #ffffff !important;
+}

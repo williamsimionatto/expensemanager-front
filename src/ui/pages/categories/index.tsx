@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {  Container, TableFooter, TablePagination } from "@mui/material";
+import { Card, CardContent, TableFooter, TablePagination } from "@mui/material";
+import Button from '@mui/material/Button';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,6 +10,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TablePaginationActions } from '../../components/table';
+import { CardHeader } from '@mui/material';
+
+import './index.css'
+import AddIcon from '@mui/icons-material/Add';
 
 type Category = {
   id: number;
@@ -42,9 +47,6 @@ const CategoriesIndex = () => {
     ])
   }, [])
 
-  const emptyRows =
-  page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
-
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
@@ -60,76 +62,84 @@ const CategoriesIndex = () => {
   };
 
   return (
-    <Container
-      className="container"
-      maxWidth="xl"
-    >
-      <div className="container-app">
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Code</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
-                (rowsPerPage > 0
-                  ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  : data
-                ).map(
-                  (row) => (
-                    <TableRow
-                      key={row.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" width={100}>
-                        {row.id}
-                      </TableCell>
+    <div className="container-app">
+      <Card>
+        <CardHeader
+          title = "Categories"
+          action = {
+            <Button
+              variant="outlined"
+              className='button-new'
+              endIcon={<AddIcon className='icon' />}
+            >
+              New
+            </Button>
+          }
+          className="card-header"
+        >
+        </CardHeader>
 
-                      <TableCell component="th" scope="row" width={300}>
-                        {row.name}
-                      </TableCell>
-
-                      <TableCell>{row.description}</TableCell>
-                    </TableRow>
-                  )
-                )
-              }
-
-              {emptyRows > 0 && (
+        <CardContent>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} size="small">
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={6} />
+                  <TableCell>Code</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
+              </TableHead>
+              <TableBody>
+                {
+                  (rowsPerPage > 0
+                    ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    : data
+                  ).map(
+                    (row) => (
+                      <TableRow
+                        key={row.id}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row" width={100}>
+                          {row.id}
+                        </TableCell>
 
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[10, 15, 30, { label: 'All', value: -1 }]}
-                  colSpan={3}
-                  count={data.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      'aria-label': 'rows per page',
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      </div>
-    </Container>
+                        <TableCell component="th" scope="row" width={300}>
+                          {row.name}
+                        </TableCell>
+
+                        <TableCell>{row.description}</TableCell>
+                      </TableRow>
+                    )
+                  )
+                }
+              </TableBody>
+
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[10, 15, 30, { label: 'All', value: -1 }]}
+                    colSpan={3}
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      inputProps: {
+                        'aria-label': 'rows per page',
+                      },
+                      native: true,
+                    }}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
