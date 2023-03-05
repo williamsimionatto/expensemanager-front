@@ -6,6 +6,7 @@ import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
 
 export type AddCategoryParams = {
+  id?: number;
   name: string;
   description: string;
 }
@@ -13,6 +14,7 @@ export type AddCategoryParams = {
 export type AddCategoryFormProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  params: AddCategoryParams;
 };
 
 export default function AddCategoryForm(props: AddCategoryFormProps) {
@@ -20,6 +22,12 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
     name: '',
     description: '',
   });
+
+  useEffect(() => {
+    if (props.params.id) {
+      setCategory(props.params);
+    }
+  }, [props.params])
 
   const [formValid, setFormValid] = useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
@@ -50,9 +58,11 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
 
     setTimeout(() => {
       setLoading(false);
+      const message = category.id ? 'Category updated successfully' : 'Category added successfully';
+      console.log(category)
 
       setShowNotification({
-        message: 'Category added successfully',
+        message: message,
         type: 'success',
         open: true,
       });
@@ -72,13 +82,13 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
   return (
     <>
       <NotficationToaster
-        message={"Category added successfully"}
         type={"success"}
+        message={showNotification.message}
         open={showNotification.open}
         setOpen={() => setShowNotification({ ...showNotification, open: false })}
       />
 
-      <Dialog 
+      <Dialog
         open={props.open}
         onClose={handleClose}
         disableEscapeKeyDown
@@ -128,20 +138,23 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
         <DialogActions>
           <Button 
             color="secondary"
-            onClick={handleClose}>
-              Cancel
+            onClick={handleClose}
+            className="button-cancel"
+            variant='outlined'
+          >
+            <span className='button-label'>Cancel</span>
           </Button>
           <LoadingButton
             color="secondary"
             onClick={handleSubmit}
             loading={loading}
             loadingPosition="end"
-            endIcon={<SaveIcon />}
+            endIcon={<SaveIcon className='icon'/>}
             variant="contained"
             disabled={!formValid}
             className="button-new"
           >
-            <span>Save</span>
+            <span className='button-label'>Save</span>
           </LoadingButton>
         </DialogActions>
       </Dialog>

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Card, CardContent, CircularProgress, TableFooter, TablePagination } from "@mui/material";
+import { Card, CardContent, CircularProgress, IconButton, TableFooter, TablePagination } from "@mui/material";
 import Button from '@mui/material/Button';
-
+import EditIcon from '@mui/icons-material/Edit';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -24,9 +24,10 @@ type Category = {
 
 const CategoriesIndex = () => {
   const [data, setData] = React.useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = React.useState<Category>({} as Category)
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [open, setOpen] = React.useState(false);
 
@@ -74,11 +75,17 @@ const CategoriesIndex = () => {
     setOpen(true);
   };
 
+  const editCategory = (category: Category) => {
+    setSelectedCategory(category);
+    setOpen(true);
+  }
+
   return (
     <>
       <AddCategoryForm
         open={open}
         setOpen={setOpen}
+        params={selectedCategory}
       />
 
       <div className="container-app">
@@ -107,13 +114,14 @@ const CategoriesIndex = () => {
                     <TableCell>Code</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Description</TableCell>
+                    <TableCell align="right">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {
                     loading ? (
                       <TableRow>
-                        <TableCell colSpan={3} align="center">
+                        <TableCell colSpan={4} align="center">
                           <CircularProgress color="secondary" />
                         </TableCell>
                       </TableRow>
@@ -136,6 +144,17 @@ const CategoriesIndex = () => {
                             </TableCell>
 
                             <TableCell>{row.description}</TableCell>
+                            <TableCell align="right">
+                              <IconButton 
+                                aria-label="edit"
+                                onClick={() => editCategory(row)}
+                              >
+                                <EditIcon 
+                                  htmlColor='#9d5bff'
+                                  fontSize='small'
+                                />
+                              </IconButton>
+                            </TableCell>
                           </TableRow>
                         )
                       )
@@ -148,8 +167,8 @@ const CategoriesIndex = () => {
                     <TableFooter>
                       <TableRow>
                         <TablePagination
-                          rowsPerPageOptions={[10, 15, 30, { label: 'All', value: -1 }]}
-                          colSpan={3}
+                          rowsPerPageOptions={[5, 10, 15, 30, { label: 'All', value: -1 }]}
+                          colSpan={4}
                           count={data.length}
                           rowsPerPage={rowsPerPage}
                           page={page}
