@@ -59,7 +59,6 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
     setTimeout(() => {
       setLoading(false);
       const message = category.id ? 'Category updated successfully' : 'Category added successfully';
-      console.log(category)
 
       setShowNotification({
         message: message,
