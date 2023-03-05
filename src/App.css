@@ -42,11 +42,25 @@
 }
 
 .button-new {
-  border-color: #9d5bff73 !important;
-  background-color: #9d5bff73 !important;
+  background-color: #9d5bff !important;
+  border-color: #9d5bffcb !important;
   color: #ffffff !important;
 }
 
-.icon:hover {
+.button-new:disabled {
+  opacity: 0.5;
+}
+
+.icon:hover, span.button-label {
+  color: #ffffff !important;
+}
+
+.button-cancel {
+  color: #ffffff !important;
+  border-color: #9d5bff73 !important;
+}
+
+.button-cancel:hover {
+  background-color: #9d5bff !important;
   color: #ffffff !important;
 }
