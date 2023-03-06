@@ -22,7 +22,7 @@ type Category = {
   description: string;
 }
 
-const CategoriesIndex = () => {
+const CategoryList = () => {
   const [data, setData] = React.useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState<Category>({} as Category)
   const [loading, setLoading] = React.useState(true);
@@ -195,4 +195,4 @@ const CategoriesIndex = () => {
   );
 }
 
-export default CategoriesIndex;
+export default CategoryList;
