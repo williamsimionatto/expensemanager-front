@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Main from "./routes/routes";
-import { Navbar, Sidebar } from "./ui/components";
+import { Navbar, Sidebar } from "./presentation/components";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 

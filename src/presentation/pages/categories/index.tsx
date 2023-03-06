@@ -15,6 +15,7 @@ import { CardHeader } from '@mui/material';
 import './index.css'
 import AddIcon from '@mui/icons-material/Add';
 import AddCategoryForm from './components/AddCategoryForm';
+import { LoadCategories } from '../../../domain/usecase';
 
 type Category = {
   id: number;
@@ -22,7 +23,13 @@ type Category = {
   description: string;
 }
 
-const CategoryList = () => {
+type Props = {
+  loadCategories: LoadCategories
+}
+
+const CategoryList: React.FC<Props> = (
+  { loadCategories }: Props
+) => {
   const [data, setData] = React.useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState<Category>({} as Category)
   const [loading, setLoading] = React.useState(true);
