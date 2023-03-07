@@ -9,6 +9,12 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+export type NotificationParams = {
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+  open: boolean;
+}
+
 export const NotficationToaster = (
   props: {
     message: string;
