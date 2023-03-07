@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { NotficationToaster } from '../../../components/notification';
+import { NotficationToaster, NotificationParams } from '../../../components/notification';
 import { LoadingButton } from '@mui/lab';
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -32,7 +32,7 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
   const [formValid, setFormValid] = useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
 
-  const [showNotification, setShowNotification] = useState({
+  const [showNotification, setShowNotification] = useState<NotificationParams>({
     message: '',
     type: 'success',
     open: false,
@@ -81,7 +81,7 @@ export default function AddCategoryForm(props: AddCategoryFormProps) {
   return (
     <>
       <NotficationToaster
-        type={"success"}
+        type={showNotification.type}
         message={showNotification.message}
         open={showNotification.open}
         setOpen={() => setShowNotification({ ...showNotification, open: false })}

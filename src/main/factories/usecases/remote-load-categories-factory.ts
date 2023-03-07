@@ -5,6 +5,6 @@ import { makeApiUrl } from "../http";
 
 export const makeRemoteLoadCategories = (): LoadCategories => 
   new RemoteLoadCategories(
-    makeApiUrl('/expense-categories'),
+    makeApiUrl('expense-category'),
     makeAxiosHttpClient()
   )

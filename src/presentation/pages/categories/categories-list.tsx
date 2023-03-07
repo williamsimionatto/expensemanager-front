@@ -16,12 +16,8 @@ import './index.css'
 import AddIcon from '@mui/icons-material/Add';
 import AddCategoryForm from './components/AddCategoryForm';
 import { LoadCategories } from '../../../domain/usecase';
-
-type Category = {
-  id: number;
-  name: string;
-  description: string;
-}
+import { NotficationToaster, NotificationParams } from '../../components/notification';
+import { Category } from '../../../domain/model';
 
 type Props = {
   loadCategories: LoadCategories
@@ -35,26 +31,29 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, [])
+  const [showNotification, setShowNotification] = React.useState<NotificationParams>({
+    message: '',
+    type: 'success',
+    open: false,
+  });
 
   React.useEffect(() => {
-    setData([
-      { id: 1, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'},
-      { id: 2, name: 'Transporte', description: 'Inclui gasto com veículo, combustíveis, etc...' },
-      { id: 3, name: 'Alimentação', description: 'Inclui gastos com mercado, restaurantes, lanches etc...' },
-      { id: 4, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'},
-      { id: 5, name: 'Transporte', description: 'Inclui gasto com veículo, combustíveis, etc...' },
-      { id: 6, name: 'Alimentação', description: 'Inclui gastos com mercado, restaurantes, lanches etc...' },
-      { id: 7, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'},
-      { id: 8, name: 'Transporte', description: 'Inclui gasto com veículo, combustíveis, etc...' },
-      { id: 9, name: 'Alimentação', description: 'Inclui gastos com mercado, restaurantes, lanches etc...' },
-      { id: 10, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'}
-    ])
-  }, [])
+    loadCategories
+      .load()
+      .then((categories) => {
+        setData(categories)
+        setLoading(false)
+      })
+      .catch(() => {
+        setData([])
+        setLoading(false)
+        setShowNotification({
+          message: 'Error loading categories',
+          type: 'error',
+          open: true,
+        })
+      })
+  }, [loadCategories])
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -81,6 +80,13 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
 
   return (
     <>
+      <NotficationToaster
+        type={showNotification.type}
+        message={showNotification.message}
+        open={showNotification.open}
+        setOpen={() => setShowNotification({ ...showNotification, open: false })}
+      />
+
       <AddCategoryForm
         open={open}
         setOpen={setOpen}
