@@ -6,24 +6,35 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from "react-router-dom";
 
 import './style/add-category.css'
+import { NotficationToaster } from '../../components/notification';
 
-// type Props = {
-//   addCategory: AddCategory
-// }
+type Props = {
+  addCategory: AddCategory
+}
 
 type State = AddCategory.Params & {
   loading: boolean
   formValid: boolean
+  notification: {
+    message: string
+    type: 'success' | 'error'
+    open: boolean
+  }
 }
 
-const AddCategoryForm: React.FC<{}> = () => {
+const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
   const navigate = useNavigate();
 
   const [state, setState] = React.useState<State>({
     name: '',
     description: '',
     loading: false,
-    formValid: false
+    formValid: false,
+    notification: {
+      message: '',
+      type: 'success',
+      open: false,
+    }
   })
 
   const validate = React.useCallback(() => {
@@ -42,6 +53,28 @@ const AddCategoryForm: React.FC<{}> = () => {
       ...state,
       loading: true
     }))
+
+    await addCategory
+      .add(state)
+      .then(() => {
+        setState((state) => ({
+          ...state,
+          loading: false
+        }))
+
+        handleRedirect('/categories')
+      })
+      .catch(() => {
+        setState((state) => ({
+          ...state,
+          loading: false,
+          notification: {
+            message: 'Error adding category',
+            type: 'error',
+            open: true
+          }
+        }))
+      })
   }
 
   const handleChanges = (
@@ -59,6 +92,21 @@ const AddCategoryForm: React.FC<{}> = () => {
   return (
     <>
       <div className="container-app">
+        <NotficationToaster
+          type={state.notification.type}
+          message={state.notification.message}
+          open={state.notification.open}
+          setOpen={() => {
+            setState((state) => ({
+              ...state,
+              notification: {
+                ...state.notification,
+                open: false
+              }
+            }))
+          }}
+        />
+
         <Card>
           <CardHeader title="Add Category" className="card-header" />
 

@@ -1,12 +1,12 @@
 import { Route, Routes } from 'react-router-dom'
+import makeAddCategoryPage from '../main/factories/pages/add-category-factory';
 import makeCategoriesListPage from '../main/factories/pages/categories-list-factory';
-import AddCategoryForm from '../presentation/pages/add-category/add-category';
 
 const Router: React.FC = () => {
   return (
       <Routes>
         <Route path='/categories' element={makeCategoriesListPage()}/>
-        <Route path='/categories/add' element={<AddCategoryForm />} />
+        <Route path='/categories/add' element={makeAddCategoryPage()} />
       </Routes>
   );
 }
