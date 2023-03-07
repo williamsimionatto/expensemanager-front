@@ -18,12 +18,14 @@ import AddCategoryForm from './components/AddCategoryForm';
 import { LoadCategories } from '../../../domain/usecase';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
 import { Category } from '../../../domain/model';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   loadCategories: LoadCategories
 }
 
 const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
+  const navigate = useNavigate();
   const [data, setData] = React.useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState<Category>({} as Category)
   const [loading, setLoading] = React.useState(true);
@@ -69,9 +71,9 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
     setPage(0);
   };
 
-  const handleOpenAddCategoryModal = () => {
-    setOpen(true);
-  };
+  const handleRedirect = (route: string) => {
+    navigate(route);
+  }
 
   const editCategory = (category: Category) => {
     setSelectedCategory(category);
@@ -102,7 +104,7 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
                 variant="outlined"
                 className='button-new'
                 endIcon={<AddIcon className='icon' />}
-                onClick={handleOpenAddCategoryModal}
+                onClick={() => handleRedirect('/categories/add')}
               >
                 New
               </Button>
