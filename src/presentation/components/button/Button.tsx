@@ -1,6 +1,6 @@
 import { FC, MouseEvent } from "react";
 import { Icon } from "../icon/Icon";
-import { useRipple } from "../../../hooks/useRipple";
+import { useRipple } from "../../hooks/useRipple";
 import { useNavigate } from "react-router-dom";
 
 type ButtonProps = {
