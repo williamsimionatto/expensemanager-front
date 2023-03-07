@@ -1,11 +1,14 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import CategoryList from '../../../presentation/pages/categories/categories-list'
 import { makeRemoteLoadCategories } from '../usecases'
 
-export const makeCategoriesList: React.FC = () => {
+export default function makeCategoriesListPage(): ReactNode {
   return (
-    <CategoryList
-      loadCategories={makeRemoteLoadCategories()}
-    />
+    <>
+      <CategoryList
+        loadCategories={makeRemoteLoadCategories()}
+      />
+    </>
   )
 }
+
