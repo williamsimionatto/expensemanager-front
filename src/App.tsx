@@ -1,8 +1,9 @@
 import { useState } from "react";
-import Main from "./routes/routes";
 import { Navbar, Sidebar } from "./presentation/components";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 import './App.css';
+import Router from "./routes/routes";
 
 const darkTheme = createTheme({
   palette: {
@@ -22,7 +23,7 @@ function App() {
         />
         <Navbar setIsOpen={setIsOpen} />
         <Sidebar setIsOpen={setIsOpen} isOpen={isOpen} />
-        <Main />
+        <Router />
       </ThemeProvider>
     </>
   );

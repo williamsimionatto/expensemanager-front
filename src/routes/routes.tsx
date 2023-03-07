@@ -1,11 +1,17 @@
-import { Routes, Route } from 'react-router-dom';
-import CategoryList from '../presentation/pages/categories';
+import { Route, Routes } from 'react-router-dom'
+import { makeRemoteLoadCategories } from '../main/factories/usecases';
+import CategoryList from '../presentation/pages/categories/categories-list';
 
-const Main = () => {
-  return (         
+const Router: React.FC = () => {
+  return (
       <Routes>
-      <Route path='/categories' element={<CategoryList/>} />
-    </Routes>
+        <Route path='/categories' element={
+            <CategoryList
+              loadCategories={makeRemoteLoadCategories()}
+            />
+          }
+        />
+      </Routes>
   );
 }
-export default Main;
+export default Router;

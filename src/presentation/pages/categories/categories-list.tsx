@@ -27,15 +27,12 @@ type Props = {
   loadCategories: LoadCategories
 }
 
-const CategoryList: React.FC<Props> = (
-  { loadCategories }: Props
-) => {
+const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
   const [data, setData] = React.useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = React.useState<Category>({} as Category)
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -55,12 +52,7 @@ const CategoryList: React.FC<Props> = (
       { id: 7, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'},
       { id: 8, name: 'Transporte', description: 'Inclui gasto com veículo, combustíveis, etc...' },
       { id: 9, name: 'Alimentação', description: 'Inclui gastos com mercado, restaurantes, lanches etc...' },
-      { id: 10, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'},
-      { id: 11, name: 'Transporte', description: 'Inclui gasto com veículo, combustíveis, etc...' },
-      { id: 12, name: 'Alimentação', description: 'Inclui gastos com mercado, restaurantes, lanches etc...' },
-      { id: 13, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'},
-      { id: 14, name: 'Transporte', description: 'Inclui gasto com veículo, combustíveis, etc...' },
-      { id: 15, name: 'Alimentação', description: 'Inclui gastos com mercado, restaurantes, lanches etc...' },
+      { id: 10, name: 'Moradia', description: 'Inclui gastos com moradia, manuntenção, etc...'}
     ])
   }, [])
 
