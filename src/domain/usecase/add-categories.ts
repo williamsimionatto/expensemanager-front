@@ -1,5 +1,7 @@
+import { Category } from "../model"
+
 export interface AddCategories {
-  add: (params: AddCategories.Params) => Promise<void>
+  add: (params: AddCategories.Params) => Promise<Category>
 }
 
 export namespace AddCategories {
@@ -7,4 +9,6 @@ export namespace AddCategories {
     name: string
     description: string
   }
+
+  export type Result = Category
 }
