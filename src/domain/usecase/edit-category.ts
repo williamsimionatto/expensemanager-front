@@ -1,3 +1,5 @@
+import { Category } from "../model"
+
 export interface EditCategory {
   edit: (params: EditCategory.Params) => Promise<EditCategory.Result>
 }
@@ -9,5 +11,5 @@ export namespace EditCategory {
     description: string
   }
 
-  export type Result = boolean
+  export type Result = Category
 }
