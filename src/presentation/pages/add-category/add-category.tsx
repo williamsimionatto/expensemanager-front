@@ -72,12 +72,12 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
           open: true
         })
       })
-      .catch(() => {
+      .catch((error) => {
         setState((state) => ({
           ...state,
           loading: false,
           notification: {
-            message: 'Error adding category',
+            message: error.message,
             type: 'error',
             open: true
           }
