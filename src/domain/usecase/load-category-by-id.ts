@@ -1,7 +1,7 @@
 import { Category } from "../model"
 
 export interface LoadCategoryById {
-  loadById: (id: number) => Promise<LoadCategoryById.Result>
+  loadById: () => Promise<LoadCategoryById.Result>
 }
 
 export namespace LoadCategoryById{

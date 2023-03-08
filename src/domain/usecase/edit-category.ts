@@ -6,7 +6,6 @@ export interface EditCategory {
 
 export namespace EditCategory {
   export type Params = {
-    id: string
     name: string
     description: string
   }
