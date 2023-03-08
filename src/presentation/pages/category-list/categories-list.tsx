@@ -14,22 +14,21 @@ import { CardHeader } from '@mui/material';
 
 import './index.css'
 import AddIcon from '@mui/icons-material/Add';
-import AddCategoryForm from './components/AddCategoryForm';
 import { LoadCategories } from '../../../domain/usecase';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
 import { Category } from '../../../domain/model';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   loadCategories: LoadCategories
 }
 
 const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
+  const navigate = useNavigate();
   const [data, setData] = React.useState<Category[]>([])
-  const [selectedCategory, setSelectedCategory] = React.useState<Category>({} as Category)
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [open, setOpen] = React.useState(false);
 
   const [showNotification, setShowNotification] = React.useState<NotificationParams>({
     message: '',
@@ -69,13 +68,8 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
     setPage(0);
   };
 
-  const handleOpenAddCategoryModal = () => {
-    setOpen(true);
-  };
-
-  const editCategory = (category: Category) => {
-    setSelectedCategory(category);
-    setOpen(true);
+  const handleRedirect = (route: string) => {
+    navigate(route);
   }
 
   return (
@@ -87,12 +81,6 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
         setOpen={() => setShowNotification({ ...showNotification, open: false })}
       />
 
-      <AddCategoryForm
-        open={open}
-        setOpen={setOpen}
-        params={selectedCategory}
-      />
-
       <div className="container-app">
         <Card>
           <CardHeader
@@ -102,7 +90,7 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
                 variant="outlined"
                 className='button-new'
                 endIcon={<AddIcon className='icon' />}
-                onClick={handleOpenAddCategoryModal}
+                onClick={() => handleRedirect('/categories/add')}
               >
                 New
               </Button>
@@ -152,7 +140,6 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
                             <TableCell align="right">
                               <IconButton 
                                 aria-label="edit"
-                                onClick={() => editCategory(row)}
                               >
                                 <EditIcon 
                                   htmlColor='#9d5bff'
