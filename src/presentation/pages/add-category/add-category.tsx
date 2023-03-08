@@ -45,7 +45,7 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
   }, [])
 
   const handleRedirect = (route: string) => {
-    navigate(route);
+    navigate(route)
   }
 
   const handleSubmit = async () => {
@@ -59,7 +59,11 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
       .then(() => {
         setState((state) => ({
           ...state,
-          loading: false
+          notification: {
+            message: 'Category added successfully',
+            type: 'success',
+            open: true
+          }
         }))
 
         handleRedirect('/categories')
