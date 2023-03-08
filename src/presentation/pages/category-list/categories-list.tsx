@@ -17,7 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { LoadCategories } from '../../../domain/usecase';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
 import { Category } from '../../../domain/model';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type Props = {
   loadCategories: LoadCategories
@@ -25,6 +25,7 @@ type Props = {
 
 const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = React.useState<Category[]>([])
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
@@ -35,6 +36,19 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
     type: 'success',
     open: false,
   });
+
+  React.useEffect(() => {
+    if (location.state) {
+      const notification = location.state.notification
+      setShowNotification({
+        message: notification?.message || 'Category inserted successfully',
+        type: notification?.type || 'success',
+        open: true,
+      })
+    }
+
+    navigate(location.pathname, { state: null})
+  }, [location.state, location.pathname, navigate])
 
   React.useEffect(() => {
     loadCategories

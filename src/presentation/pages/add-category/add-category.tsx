@@ -6,7 +6,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from "react-router-dom";
 
 import './style/add-category.css'
-import { NotficationToaster } from '../../components/notification';
+import { NotficationToaster, NotificationParams } from '../../components/notification';
 
 type Props = {
   addCategory: AddCategory
@@ -24,7 +24,6 @@ type State = AddCategory.Params & {
 
 const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
   const navigate = useNavigate();
-
   const [state, setState] = React.useState<State>({
     name: '',
     description: '',
@@ -44,8 +43,13 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
     }))
   }, [])
 
-  const handleRedirect = (route: string) => {
-    navigate(route)
+  const handleRedirect = (route: string, notification?: NotificationParams) => {
+    navigate(route, {
+      replace: true,
+      state: {
+        notification
+      }
+    })
   }
 
   const handleSubmit = async () => {
@@ -59,14 +63,14 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
       .then(() => {
         setState((state) => ({
           ...state,
-          notification: {
-            message: 'Category added successfully',
-            type: 'success',
-            open: true
-          }
+          loading: false
         }))
 
-        handleRedirect('/categories')
+        handleRedirect('/categories', {
+          message: 'Category added successfully',
+          type: 'success',
+          open: true
+        })
       })
       .catch(() => {
         setState((state) => ({
