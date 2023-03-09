@@ -154,6 +154,7 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
                             <TableCell align="right">
                               <IconButton 
                                 aria-label="edit"
+                                onClick={() => handleRedirect(`/categories/${row.id}`)}
                               >
                                 <EditIcon 
                                   htmlColor='#9d5bff'

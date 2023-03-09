@@ -1,18 +1,18 @@
-import { LoadingButton } from '@mui/lab';
-import { Button, Card, CardActions, CardContent, CardHeader, TextField } from '@mui/material';
-import * as React from 'react';
-import { AddCategory } from '../../../domain/usecase';
+import { LoadingButton } from "@mui/lab"
+import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material"
+import React from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { EditCategory, LoadCategoryById } from "../../../domain/usecase"
+import { NotficationToaster, NotificationParams } from "../../components/notification"
 import SaveIcon from '@mui/icons-material/Save';
-import { useNavigate } from "react-router-dom";
-
-import './style/add-category.css'
-import { NotficationToaster, NotificationParams } from '../../components/notification';
 
 type Props = {
-  addCategory: AddCategory
+  editCategory: EditCategory
+  loadCategoryById: LoadCategoryById
 }
 
-type State = AddCategory.Params & {
+type State = EditCategory.Params & {
+  id: string
   loading: boolean
   formValid: boolean
   notification: {
@@ -22,9 +22,12 @@ type State = AddCategory.Params & {
   }
 }
 
-const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
+const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: Props) => {
   const navigate = useNavigate();
+  const params = useParams()
+
   const [state, setState] = React.useState<State>({
+    id: params.categoryId ?? '',
     name: '',
     description: '',
     loading: false,
@@ -32,7 +35,7 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
     notification: {
       message: '',
       type: 'success',
-      open: false,
+      open: false
     }
   })
 
@@ -43,34 +46,16 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
     }))
   }, [])
 
-  const handleRedirect = (route: string, notification?: NotificationParams) => {
-    navigate(route, {
-      replace: true,
-      state: {
-        notification
-      }
-    })
-  }
-
-  const handleSubmit = async () => {
-    setState((state) => ({
-      ...state,
-      loading: true
-    }))
-
-    await addCategory
-      .add(state)
-      .then(() => {
-        setState((state) => ({
-          ...state,
-          loading: false
+  React.useEffect(() => {
+    loadCategoryById
+      .loadById(state.id)
+      .then((category) => {
+        setState((old) => ({
+          ...old,
+          id: `${category.id}`,
+          name: category.name,
+          description: category.description
         }))
-
-        handleRedirect('/categories', {
-          message: 'Category added successfully',
-          type: 'success',
-          open: true
-        })
       })
       .catch((error) => {
         setState((state) => ({
@@ -83,6 +68,17 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
           }
         }))
       })
+
+    validate()
+  }, [loadCategoryById, validate, state.id])
+
+  const handleRedirect = (route: string, notification?: NotificationParams) => {
+    navigate(route, {
+      replace: true,
+      state: {
+        notification
+      }
+    })
   }
 
   const handleChanges = (
@@ -97,32 +93,85 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
     validate();
   }
 
+  const handleSubmit = async () => {
+    setState((state) => ({
+      ...state,
+      loading: true
+    }))
+
+    const { name, description } = state
+
+    await editCategory
+      .edit(state.id, {
+        name,
+        description
+      })
+      .then(() => {
+        setState((state) => ({
+          ...state,
+          loading: false
+        }))
+
+        handleRedirect('/categories', {
+          message: 'Category updated successfully',
+          type: 'success',
+          open: true
+        })
+      })
+      .catch((error) => {
+        setState((state) => ({
+          ...state,
+          loading: false
+        }))
+
+        setState((state) => ({
+          ...state,
+          loading: false,
+          notification: {
+            message: error.message,
+            type: 'error',
+            open: true
+          }
+        }))
+      })
+  }
+
   return (
     <>
+      <NotficationToaster
+        type={state.notification.type}
+        message={state.notification.message}
+        open={state.notification.open}
+        setOpen={() => {
+          setState((state) => ({
+            ...state,
+            notification: {
+              ...state.notification,
+              open: false
+            }
+          }))
+        }}
+      />
+        
       <div className="container-app">
-        <NotficationToaster
-          type={state.notification.type}
-          message={state.notification.message}
-          open={state.notification.open}
-          setOpen={() => {
-            setState((state) => ({
-              ...state,
-              notification: {
-                ...state.notification,
-                open: false
-              }
-            }))
-          }}
-        />
-
         <Card>
-          <CardHeader title="Add Category" className="card-header" />
+          <CardHeader title="Edit Category" className="card-header" />
 
           <CardContent>
             <form>
               <TextField
                 sx={{ m: 1, width: '25ch' }}
-                autoFocus
+                margin="dense"
+                id="id"
+                label="Código"
+                type="text"
+                value={state.id}
+                variant="outlined"
+                disabled={true}
+              />
+
+              <TextField
+                sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="name"
                 label="Name"
@@ -182,4 +231,4 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
   )
 }
 
-export default AddCategoryForm;
+export default EditCategoryForm
