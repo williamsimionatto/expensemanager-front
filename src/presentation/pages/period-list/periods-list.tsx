@@ -61,6 +61,10 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
     setPage(0);
   };
 
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  }
+
   return (
     <>
       <NotficationToaster
@@ -121,12 +125,12 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                             {row.id}
                           </TableCell>
 
-                          <TableCell component="th" scope="row" width={300}>
+                          <TableCell component="th" scope="row" width={150}>
                             {row.name}
                           </TableCell>
 
                           <TableCell component="th" scope="row" width={150}>
-                            {row.budget}
+                            {formatCurrency(row.budget)}
                           </TableCell>
 
                           <TableCell align="right">
