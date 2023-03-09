@@ -45,13 +45,26 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
   }, [])
 
   React.useEffect(() => {
-    loadCategoryById.loadById().then((category) => {
-      setState((old) => ({
-        ...old,
-        name: category.name,
-        description: category.description
-      }))
-    })
+    loadCategoryById
+      .loadById()
+      .then((category) => {
+        setState((old) => ({
+          ...old,
+          name: category.name,
+          description: category.description
+        }))
+      })
+      .catch((error) => {
+        setState((state) => ({
+          ...state,
+          loading: false,
+          notification: {
+            message: error.message,
+            type: 'error',
+            open: true
+          }
+        }))
+      })
 
     validate()
   }, [loadCategoryById, validate])
