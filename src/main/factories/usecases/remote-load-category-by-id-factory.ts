@@ -2,8 +2,8 @@ import { RemoteLoadCategoryById } from "../../../data/usecase";
 import { LoadCategoryById } from "../../../domain/usecase";
 import { makeApiUrl, makeAxiosHttpClient } from "../http";
 
-export const makeRemoteLoadCategoryById = (id: string): LoadCategoryById => 
+export const makeRemoteLoadCategoryById = (): LoadCategoryById => 
   new RemoteLoadCategoryById(
-    makeApiUrl(`expense-category/{id}`),
+    makeApiUrl('expense-category'),
     makeAxiosHttpClient()
   )

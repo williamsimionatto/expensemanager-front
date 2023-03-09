@@ -8,9 +8,9 @@ export class RemoteEditCategory implements EditCategory {
     private readonly httpClient: HttpClient<RemoteEditCategory.Result>
   ) {}
 
-  async edit (params: EditCategory.Params): Promise<EditCategory.Result> {
+  async edit (id: string, params: EditCategory.Params): Promise<EditCategory.Result> {
     const httpResponse = await this.httpClient.request({
-      url: this.url,
+      url: `${this.url}/${id}`,
       method: 'put',
       body: params
     });

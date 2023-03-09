@@ -7,9 +7,9 @@ export class RemoteLoadCategoryById implements LoadCategoryById {
     private readonly httpClient: HttpClient<RemoteLoadCategoryById.Result>
   ) {}
 
-  async loadById(): Promise<LoadCategoryById.Result> {
+  async loadById(id: string): Promise<LoadCategoryById.Result> {
     const httpResponse = await this.httpClient.request({
-      url: this.url,
+      url: `${this.url}/${id}`,
       method: 'get'
     })
 

@@ -8,7 +8,10 @@ const Router: React.FC = () => {
     <Routes>
       <Route path='/categories' element={makeCategoriesListPage()}/>
       <Route path='/categories/add' element={makeAddCategoryPage()} />
-      <Route path='/categories/:id' element={makeEditCategoryPage()} />
+      <Route 
+        path='/categories/:categoryId' 
+        element={makeEditCategoryPage()}
+      />
     </Routes>
   );
 }

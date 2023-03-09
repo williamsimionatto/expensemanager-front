@@ -1,7 +1,7 @@
 import { Category } from "../model"
 
 export interface EditCategory {
-  edit: (params: EditCategory.Params) => Promise<EditCategory.Result>
+  edit: (id: string, params: EditCategory.Params) => Promise<EditCategory.Result>
 }
 
 export namespace EditCategory {

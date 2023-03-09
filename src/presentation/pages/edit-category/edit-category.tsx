@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab"
 import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material"
 import React from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { EditCategory, LoadCategoryById } from "../../../domain/usecase"
 import { NotficationToaster, NotificationParams } from "../../components/notification"
 import SaveIcon from '@mui/icons-material/Save';
@@ -24,8 +24,10 @@ type State = EditCategory.Params & {
 
 const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: Props) => {
   const navigate = useNavigate();
+  const params = useParams()
+
   const [state, setState] = React.useState<State>({
-    id: '',
+    id: params.categoryId ?? '',
     name: '',
     description: '',
     loading: false,
@@ -46,10 +48,11 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
 
   React.useEffect(() => {
     loadCategoryById
-      .loadById()
+      .loadById(state.id)
       .then((category) => {
         setState((old) => ({
           ...old,
+          id: `${category.id}`,
           name: category.name,
           description: category.description
         }))
@@ -67,7 +70,7 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
       })
 
     validate()
-  }, [loadCategoryById, validate])
+  }, [loadCategoryById, validate, state.id])
 
   const handleRedirect = (route: string, notification?: NotificationParams) => {
     navigate(route, {
@@ -99,7 +102,7 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
     const { name, description } = state
 
     await editCategory
-      .edit({
+      .edit(state.id, {
         name,
         description
       })
@@ -158,7 +161,6 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
             <form>
               <TextField
                 sx={{ m: 1, width: '25ch' }}
-                autoFocus
                 margin="dense"
                 id="id"
                 label="Código"
@@ -170,7 +172,6 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
 
               <TextField
                 sx={{ m: 1, width: '25ch' }}
-                autoFocus
                 margin="dense"
                 id="name"
                 label="Name"
