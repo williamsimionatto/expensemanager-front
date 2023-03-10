@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { Period } from "../../../domain/model";
 import { TablePaginationActions } from "../../components/table";
 import { NotficationToaster, NotificationParams } from "../../components/notification";
+import ProgressBar from "../../components/progessbar/ProgressBar";
 
-type Props = {
+type Props = { 
   loadPeriods: LoadPeriods
 }
 
@@ -100,6 +101,8 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                     <TableCell>Code</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Budget</TableCell>
+                    <TableCell>Used Budget</TableCell>
+                    <TableCell></TableCell>
                     <TableCell align="right">Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -108,7 +111,7 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                   {
                     loading ? (
                       <TableRow>
-                        <TableCell colSpan={4} align="center">
+                        <TableCell colSpan={6} align="center">
                           <CircularProgress color="secondary" />
                         </TableCell>
                       </TableRow>
@@ -133,7 +136,15 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                             {formatCurrency(row.budget)}
                           </TableCell>
 
-                          <TableCell align="right">
+                          <TableCell component="th" scope="row" width={150}>
+                            {formatCurrency(row.usedBudget)}
+                          </TableCell>
+
+                          <TableCell component="th" scope="row" width={150}>
+                            <ProgressBar value={(row.budget / row.usedBudget)} />
+                          </TableCell>
+
+                          <TableCell align="right" width={100}>
                             <IconButton
                               aria-label="edit"
                               onClick={() => handleRedirect(`/periods/${row.id}`)}
@@ -156,7 +167,7 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                       <TableRow>
                         <TablePagination
                           rowsPerPageOptions={[5, 10, 15, 30, { label: 'All', value: -1 }]}
-                          colSpan={4}
+                          colSpan={7}
                           count={data.length}
                           rowsPerPage={rowsPerPage}
                           page={page}
