@@ -141,7 +141,7 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                           </TableCell>
 
                           <TableCell component="th" scope="row" width={150}>
-                            <ProgressBar value={(row.budget / row.usedBudget)} />
+                            <ProgressBar value={(row.usedBudget / row.budget) * 100} />
                           </TableCell>
 
                           <TableCell align="right" width={100}>

@@ -28,11 +28,20 @@ const useStyles = makeStyles(
           backgroundColor: "#088208a3"
         },
         "&.medium": {
-          backgroundColor: "#efbb5aa3"
+          backgroundColor: "#FFA500"
         },
         "&.high": {
-          backgroundColor: "#f44336"
+          backgroundColor: "#F44336"
         }
+      },
+      low: {
+        borderColor: "#088208a3"
+      },
+      medium: {
+        borderColor: "#FFA500"
+      },
+      high: {
+        borderColor: "#F44336"
       }
     }),
   { defaultTheme }
@@ -46,17 +55,23 @@ const ProgressBar = React.memo(function ProgressBar(props: ProgressBarProps) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={
+      classes.root + " " + (
+        value < 30 ? classes.low : value >= 30 && value <= 70 ? classes.medium : classes.high
+      )
+    }>
       <div className={classes.value}>
-        {`${value.toLocaleString()} %`}
+        {`${(Math.round(value * 100) / 100).toFixed(2)} %`}
       </div>
 
       <div
-        className={clsx(classes.bar, {
-          low: value < 30,
-          medium: value >= 30 && value <= 70,
-          high: value > 70
-        })}
+        className={
+          clsx(classes.bar, {
+            low: value < 30,
+            medium: value >= 30 && value <= 70,
+            high: value > 70
+          })
+        }
         style={{ maxWidth: `${value}%` }}
       />
     </div>
