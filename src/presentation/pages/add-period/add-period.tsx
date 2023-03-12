@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
+import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import SaveIcon from '@mui/icons-material/Save';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
@@ -7,14 +7,16 @@ import { AddPeriod } from '../../../domain/usecase';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dayjs } from 'dayjs';
 
-type Props = {}
+type Props = {
+  addPeriod: AddPeriod
+}
 
 type State = AddPeriod.Params & {
   loading: boolean
   formValid: boolean
 }
 
-const AddPeriodForm: React.FC<Props> = () => {
+const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
@@ -66,10 +68,33 @@ const AddPeriodForm: React.FC<Props> = () => {
   }
 
   const handleSubmit = async () => {
-    // setState((state) => ({
-    //   ...state,
-    //   loading: true
-    // }))
+    setState((state) => ({
+      ...state,
+      loading: true
+    }))
+
+    const { name, startDate, endDate, budget, categories } = state
+
+    await addPeriod.add({
+      name,
+      startDate,
+      endDate,
+      budget,
+      categories
+    })
+    .then(() => {
+      setState((state) => ({
+        ...state,
+        loading: false
+      }))
+
+      handleRedirect('/periods')
+    }).catch((error) => {
+      setState((state) => ({
+        ...state,
+        loading: false
+      }))
+    })
   }
 
   return (

@@ -1,7 +1,7 @@
 import { RemotePeriodResultModel } from "../model"
 
 export interface AddPeriod {
-  add: (params: AddPeriod.Params) => Promise<AddPeriod.Result>
+  add: (params: AddPeriod.Params) => Promise<AddPeriod.Result | AddPeriod.Error>
 }
 
 export namespace AddPeriod {
@@ -14,6 +14,11 @@ export namespace AddPeriod {
   }
 
   export type Result = RemotePeriodResultModel
+  export type Error =  {
+    details: string;
+    message: string;
+    timestamp: Date;
+  }
 
   export type AddPeriodCategory = {
     categoryId: number

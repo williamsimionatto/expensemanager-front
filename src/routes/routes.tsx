@@ -1,9 +1,9 @@
 import { Route, Routes } from 'react-router-dom'
 import makeAddCategoryPage from '../main/factories/pages/add-category-factory';
+import makeAddPeriodPage from '../main/factories/pages/add-period-factory';
 import makeCategoriesListPage from '../main/factories/pages/categories-list-factory';
 import makeEditCategoryPage from '../main/factories/pages/edit-category-factory';
 import makePeriodsListPage from '../main/factories/pages/periods-list-factory';
-import AddPeriodForm from '../presentation/pages/add-period/add-period';
 
 const Router: React.FC = () => {
   return (
@@ -16,7 +16,7 @@ const Router: React.FC = () => {
       />
 
       <Route path="/periods" element={makePeriodsListPage()}></Route>
-      <Route path='/periods/add' element={<AddPeriodForm />}></Route>
+      <Route path='/periods/add' element={makeAddPeriodPage()}></Route>
     </Routes>
   );
 }
