@@ -1,4 +1,4 @@
-export type Period = {
+export type RemotePeriodListResultModel = {
   id: number
   name: string
   startDate: Date

@@ -1,4 +1,4 @@
-import { Period } from "../model"
+import { RemotePeriodListResultModel } from "../model"
 
 export interface AddPeriod {
   add: (params: AddPeriod.Params) => Promise<AddPeriod.Result>
@@ -13,7 +13,7 @@ export namespace AddPeriod {
     categories: AddPeriodCategory[]
   }
 
-  export type Result = Period & {
+  export type Result = RemotePeriodListResultModel & {
     categories: []
   }
 

@@ -4,7 +4,7 @@ import { LoadPeriods } from "../../../domain/usecase"
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from "react-router-dom";
-import { Period } from "../../../domain/model";
+import { RemotePeriodListResultModel } from "../../../domain/model";
 import { TablePaginationActions } from "../../components/table";
 import { NotficationToaster, NotificationParams } from "../../components/notification";
 import ProgressBar from "../../components/progessbar/ProgressBar";
@@ -15,7 +15,7 @@ type Props = {
 
 const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
   const navigate = useNavigate();
-  const [data, setData] = React.useState<Period[]>([])
+  const [data, setData] = React.useState<RemotePeriodListResultModel[]>([])
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
