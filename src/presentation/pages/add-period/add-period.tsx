@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AddPeriod } from '../../../domain/usecase';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dayjs } from 'dayjs';
+import { NotficationToaster, NotificationParams } from '../../components/notification';
 
 type Props = {
   addPeriod: AddPeriod
@@ -14,6 +15,7 @@ type Props = {
 type State = AddPeriod.Params & {
   loading: boolean
   formValid: boolean
+  notification: NotificationParams
 }
 
 const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
@@ -28,11 +30,21 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
     budget: 0,
     categories: [],
     loading: false,
-    formValid: false
+    formValid: false,
+    notification: {
+      message: '',
+      type: 'success',
+      open: false,
+    }
   })
 
-  const handleRedirect = (route: string) => {
-    navigate(route)
+  const handleRedirect = (route: string, notification?: NotificationParams) => {
+    navigate(route, {
+      replace: true,
+      state: {
+        notification
+      }
+    })
   }
 
   const validate = React.useCallback(() => {
@@ -88,11 +100,20 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
         loading: false
       }))
 
-      handleRedirect('/periods')
+      handleRedirect('/periods', {
+        message: 'Period added successfully',
+        type: 'success',
+        open: true
+      })
     }).catch((error) => {
       setState((state) => ({
         ...state,
-        loading: false
+        loading: false,
+        notification: {
+          message: error.message,
+          type: 'error',
+          open: true
+        }
       }))
     })
   }
@@ -100,6 +121,21 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
   return (
     <>
     <div className="container-app">
+      <NotficationToaster
+        type={state.notification.type}
+        message={state.notification.message}
+        open={state.notification.open}
+        setOpen={() => {
+          setState((state) => ({
+            ...state,
+            notification: {
+              ...state.notification,
+              open: false
+            }
+          }))
+        }}
+      />
+
       <Card>
         <CardHeader title="Add Period" className="card-header" />
 
