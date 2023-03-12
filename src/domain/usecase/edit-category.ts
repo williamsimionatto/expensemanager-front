@@ -1,4 +1,4 @@
-import { Category } from "../model"
+import { RemoteCategoryResultModel } from "../model"
 
 export interface EditCategory {
   edit: (id: string, params: EditCategory.Params) => Promise<EditCategory.Result>
@@ -10,5 +10,5 @@ export namespace EditCategory {
     description: string
   }
 
-  export type Result = Category
+  export type Result = RemoteCategoryResultModel
 }

@@ -1,7 +1,7 @@
-import { Category } from "../model"
+import { RemoteCategoryResultModel } from "../model"
 
 export interface AddCategory {
-  add: (params: AddCategory.Params) => Promise<Category>
+  add: (params: AddCategory.Params) => Promise<RemoteCategoryResultModel>
 }
 
 export namespace AddCategory {
@@ -10,5 +10,5 @@ export namespace AddCategory {
     description: string
   }
 
-  export type Result = Category
+  export type Result = RemoteCategoryResultModel
 }
