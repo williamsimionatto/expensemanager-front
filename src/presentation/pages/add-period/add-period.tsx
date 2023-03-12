@@ -1,11 +1,11 @@
-/* eslint-disable no-useless-escape */
-
 import * as React from 'react';
-import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material"
+import { Box, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import SaveIcon from '@mui/icons-material/Save';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { AddPeriod } from '../../../domain/usecase';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Dayjs } from 'dayjs';
 
 type Props = {}
 
@@ -16,10 +16,13 @@ type State = AddPeriod.Params & {
 
 const AddPeriodForm: React.FC<Props> = () => {
   const navigate = useNavigate();
+  const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
+
   const [state, setState] = React.useState<State>({
     name: '',
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: '',
+    endDate: '',
     budget: 0,
     categories: [],
     loading: false,
@@ -33,7 +36,12 @@ const AddPeriodForm: React.FC<Props> = () => {
   const validate = React.useCallback(() => {
     setState((state) => ({
       ...state,
-      formValid: state.name !== '' && state.budget > 0
+      formValid: 
+        state.name !== '' && 
+        state.budget > 0 && 
+        state.startDate !== '' &&
+        state.startDate <= state.endDate &&
+        state.endDate !== ''
     }))
   }, [])
 
@@ -55,6 +63,13 @@ const AddPeriodForm: React.FC<Props> = () => {
     }))
 
     validate();
+  }
+
+  const handleSubmit = async () => {
+    // setState((state) => ({
+    //   ...state,
+    //   loading: true
+    // }))
   }
 
   return (
@@ -96,6 +111,62 @@ const AddPeriodForm: React.FC<Props> = () => {
               required
               inputProps={{min: 0, style: { textAlign: 'right' }}}
             />
+
+            <FormControl
+              sx={{ m: 1, width: '25ch' }}
+              variant="outlined"
+              margin='dense'
+              required
+            >
+              <DatePicker 
+                label="Start Date"
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                  const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
+
+                  setState((state) => ({
+                    ...state,
+                    startDate: date
+                  }))
+
+                  validate();
+                }}
+                disabled={state.loading}
+              />
+              <FormHelperText>
+                {state.startDate === '' ? 'This field is required' : ''}
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl
+              sx={{ m: 1, width: '25ch' }}
+              variant="outlined"
+              margin='dense'
+              color={state.startDate === '' ? 'secondary' : 'success'}
+              required
+            >
+              <DatePicker
+                label="End Date"
+                value={endDate}
+                onChange={(newValue) => {
+                  setEndDate(newValue);
+                  const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
+
+                  setState((state) => ({
+                    ...state,
+                    endDate: date
+                  }))
+
+                  validate();
+                }}
+                minDate={startDate}
+                disabled={state.loading}
+              />
+              <FormHelperText>
+                {state.endDate === '' ? 'This field is required' : ''}
+              </FormHelperText>
+            </FormControl>
           </form>
         </CardContent>
 
@@ -117,6 +188,7 @@ const AddPeriodForm: React.FC<Props> = () => {
             className="button-new"
             loading={state.loading}
             disabled={!state.formValid}
+            onClick={handleSubmit}
           >
             <span className='button-label'>Save</span>
           </LoadingButton>

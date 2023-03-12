@@ -7,8 +7,8 @@ export interface AddPeriod {
 export namespace AddPeriod {
   export type Params = {
     name: string
-    startDate: Date
-    endDate: Date
+    startDate: string
+    endDate: string
     budget: number
     categories: AddPeriodCategory[]
   }
