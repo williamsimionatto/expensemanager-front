@@ -1,2 +1,5 @@
 export * from './remote-category-result-model'
 export * from './remote-period-list-result-model'
+export * from './remote-period-result-model'
+export * from './remote-period-category-result-model'
+export * from './remote-expense-result-model'
