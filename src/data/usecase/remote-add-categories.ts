@@ -1,4 +1,4 @@
-import { Category } from '../../domain/model';
+import { RemoteCategoryResultModel } from '../../domain/model';
 import { AddCategory } from '../../domain/usecase';
 import { HttpClient, HttpStatusCode } from '../protocols/http';
 
@@ -16,7 +16,7 @@ export class RemoteAddCategory implements AddCategory {
     })
 
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: return httpResponse.body as Category
+      case HttpStatusCode.ok: return httpResponse.body as RemoteCategoryResultModel
       default: throw new Error('Unexpected error')
     }
   }
@@ -25,3 +25,4 @@ export class RemoteAddCategory implements AddCategory {
 export namespace RemoteAddCategory {
   export type Result = AddCategory.Result;
 }
+ 

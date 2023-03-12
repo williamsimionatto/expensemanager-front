@@ -1,4 +1,4 @@
-import { Category } from "../../domain/model";
+import { RemoteCategoryResultModel } from "../../domain/model";
 import { EditCategory } from "../../domain/usecase";
 import { HttpClient, HttpStatusCode } from "../protocols/http";
 
@@ -16,7 +16,7 @@ export class RemoteEditCategory implements EditCategory {
     });
 
     switch (httpResponse.statusCode) {
-      case HttpStatusCode.ok: return httpResponse.body as Category;
+      case HttpStatusCode.ok: return httpResponse.body as RemoteCategoryResultModel;
       default: throw new Error('Unexpected error');
     }
   }

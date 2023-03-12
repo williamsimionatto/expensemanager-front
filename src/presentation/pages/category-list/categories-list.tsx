@@ -16,7 +16,7 @@ import './index.css'
 import AddIcon from '@mui/icons-material/Add';
 import { LoadCategories } from '../../../domain/usecase';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
-import { Category } from '../../../domain/model';
+import { RemoteCategoryResultModel } from '../../../domain/model';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 type Props = {
@@ -26,7 +26,7 @@ type Props = {
 const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [data, setData] = React.useState<Category[]>([])
+  const [data, setData] = React.useState<RemoteCategoryResultModel[]>([])
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
