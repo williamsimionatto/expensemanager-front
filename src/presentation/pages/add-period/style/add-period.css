@@ -1,0 +1,9 @@
+.d-flex-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.categories {
+  border-top: 1px solid #9d5bff73;
+}
