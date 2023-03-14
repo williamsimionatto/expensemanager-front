@@ -9,7 +9,6 @@ import { NotficationToaster, NotificationParams } from '../../components/notific
 
 import SaveIcon from '@mui/icons-material/Save';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
 import './style/add-period.css';
 
 type Props = {
@@ -145,6 +144,7 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
 
         <CardContent style={{
           display: 'flex',
+          flexDirection: 'column'
         }}>
           <form>
             <TextField
@@ -262,18 +262,18 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell>Name</TableCell>
-                      <TableCell>Budget</TableCell>
-                      <TableCell>Actions</TableCell>
+                      <TableCell className='column'>Name</TableCell>
+                      <TableCell className='column'>Budget</TableCell>
+                      <TableCell className='column'>Actions</TableCell>
                     </TableRow>
                   </TableHead>
 
                   <TableBody>
                     {state.categories.map((category, index) => (
                       <TableRow key={index}>
-                        <TableCell>{category.categoryId}</TableCell>
-                        <TableCell>{category.budget}</TableCell>
-                        <TableCell></TableCell>
+                        <TableCell className='column'>{category.name}</TableCell>
+                        <TableCell className='column'>{category.budget}</TableCell>
+                        <TableCell className='column'></TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
