@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
+import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material"
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { AddPeriod } from '../../../domain/usecase';
@@ -8,6 +8,7 @@ import { Dayjs } from 'dayjs';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
 
 import SaveIcon from '@mui/icons-material/Save';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import './style/add-period.css';
 
@@ -142,7 +143,9 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
       <Card>
         <CardHeader title="Add Period" className="card-header" />
 
-        <CardContent>
+        <CardContent style={{
+          display: 'flex',
+        }}>
           <form>
             <TextField
               sx={{ m: 1, width: '25ch' }}
@@ -232,6 +235,52 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
               </FormHelperText>
             </FormControl>
           </form>
+
+          <div className='master-detail'>
+            <div className="master-detail-content">
+              <div className="master-detail-header">
+                <div className="master-detail-title">
+                  <span>Categories</span>
+                </div>
+
+                <div className='master-detail-info'>
+                  <IconButton 
+                    size='small'
+                    style={{
+                      color: '#fff'
+                    }}
+                  >
+                    <AddCircleOutlineIcon/>
+                  </IconButton>
+                </div>
+              </div>
+
+              <div className="master-detail-body">
+                <Table 
+                  className='table'
+                  border={1}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Budget</TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {state.categories.map((category, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{category.categoryId}</TableCell>
+                        <TableCell>{category.budget}</TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </div>
         </CardContent>
 
         <CardActions className='d-flex-right card-footer'>
