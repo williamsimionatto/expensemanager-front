@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material"
+import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { AddPeriod } from '../../../domain/usecase';
@@ -8,8 +8,8 @@ import { Dayjs } from 'dayjs';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
 
 import SaveIcon from '@mui/icons-material/Save';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import './style/add-period.css';
+import MasterDetail from './components/MasterDetail';
 
 type Props = {
   addPeriod: AddPeriod
@@ -21,7 +21,7 @@ type State = AddPeriod.Params & {
   notification: NotificationParams
 }
 
-const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
+const AddPeriodForm: React.FC<Props> = ({addPeriod} : Props) => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
@@ -80,6 +80,10 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
     }))
 
     validate();
+  }
+
+  const handleAddCategory = (category: AddPeriod.AddPeriodCategory) => {
+    console.log(category)
   }
 
   const handleSubmit = async () => {
@@ -236,51 +240,11 @@ const AddPeriodForm: React.FC<Props> = ( {addPeriod} : Props ) => {
             </FormControl>
           </form>
 
-          <div className='master-detail'>
-            <div className="master-detail-content">
-              <div className="master-detail-header">
-                <div className="master-detail-title">
-                  <span>Categories</span>
-                </div>
-
-                <div className='master-detail-info'>
-                  <IconButton 
-                    size='small'
-                    style={{
-                      color: '#fff'
-                    }}
-                  >
-                    <AddCircleOutlineIcon/>
-                  </IconButton>
-                </div>
-              </div>
-
-              <div className="master-detail-body">
-                <Table 
-                  className='table'
-                  border={1}
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell className='column'>Name</TableCell>
-                      <TableCell className='column'>Budget</TableCell>
-                      <TableCell className='column'>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {state.categories.map((category, index) => (
-                      <TableRow key={index}>
-                        <TableCell className='column'>{category.name}</TableCell>
-                        <TableCell className='column'>{category.budget}</TableCell>
-                        <TableCell className='column'></TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
-          </div>
+          <MasterDetail 
+            title='Categories'
+            data={state.categories}
+            onAdd={handleAddCategory}
+          />
         </CardContent>
 
         <CardActions className='d-flex-right card-footer'>
