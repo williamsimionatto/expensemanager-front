@@ -82,7 +82,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod} : Props) => {
     validate();
   }
 
-  const handleAddCategory = (category: AddPeriod.AddPeriodCategory) => {
+  const handleAddCategory = (category: AddPeriod.RemoteAddPeriodCategory) => {
     console.log(category)
   }
 

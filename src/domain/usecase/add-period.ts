@@ -10,7 +10,7 @@ export namespace AddPeriod {
     startDate: string
     endDate: string
     budget: number
-    categories: AddPeriodCategory[]
+    categories: RemoteAddPeriodCategory[]
   }
 
   export type Result = RemotePeriodResultModel
@@ -20,7 +20,8 @@ export namespace AddPeriod {
     timestamp: Date;
   }
 
-  export type AddPeriodCategory = RemoteCategoryResultModel & {
+  export type RemoteAddPeriodCategory = {
+    category: RemoteCategoryResultModel
     budget: number
   }
 }

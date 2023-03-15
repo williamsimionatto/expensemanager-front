@@ -6,15 +6,15 @@ import React from "react";
 
 type Props = {
   title: string
-  data: AddPeriod.AddPeriodCategory[]
-  onAdd: (category: AddPeriod.AddPeriodCategory) => void
+  data: AddPeriod.RemoteAddPeriodCategory[]
+  onAdd: (category: AddPeriod.RemoteAddPeriodCategory) => void
 }
 
 const MasterDetail: React.FC<Props> = (props: Props) => {
-  const [category, setCategory] = React.useState<AddPeriod.AddPeriodCategory | null>(null)
+  const [category, setCategory] = React.useState<AddPeriod.RemoteAddPeriodCategory | null>(null)
 
   const handleAddCategory = () => {
-    props.onAdd(category as AddPeriod.AddPeriodCategory)
+    props.onAdd(category as AddPeriod.RemoteAddPeriodCategory)
     setCategory(null)
   }
 
@@ -56,7 +56,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
               <TableBody>
                 {props.data.map((category, index) => (
                   <TableRow key={index}>
-                    <TableCell className='column'>{category.name}</TableCell>
+                    <TableCell className='column'>{category.category.name}</TableCell>
                     <TableCell className='column'>{category.budget}</TableCell>
                     <TableCell className='column'></TableCell>
                   </TableRow>
