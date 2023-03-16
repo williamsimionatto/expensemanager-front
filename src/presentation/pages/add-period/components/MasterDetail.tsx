@@ -88,6 +88,13 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
     )
   }
 
+  const handleEditCategory = (category: AddPeriod.RemoteAddPeriodCategory) => {
+    setCategory(category)
+    setSelectedCategory(category.category)
+    setOpenModal(true)
+    validate()
+  }
+
   return (
     <>
       <Dialog
@@ -207,6 +214,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
                         <Fab
                           size="small"
                           style={{ marginRight: '5px' }}
+                          onClick={() => handleEditCategory(category)}
                         >
                           <EditIcon 
                             htmlColor='#9d5bff'
