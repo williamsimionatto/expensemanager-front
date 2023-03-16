@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
+import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { AddPeriod, LoadCategories } from '../../../domain/usecase';
@@ -27,6 +27,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
   const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([]);
+  const [hasBudgetError, setHasBudgetError] = React.useState(false);
 
   const [state, setState] = React.useState<State>({
     name: '',
@@ -58,7 +59,15 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     })
   }
 
-  const validate = React.useCallback(() => {
+  const sumCategoriesBudget = React.useCallback(() => {
+    return state.categories.reduce((acc, cur) => {
+      return acc + Number(cur.budget)
+    }, 0)
+  }, [state.categories])
+
+  React.useEffect(() => {
+    const categoriesBudget = sumCategoriesBudget()
+
     setState((state) => ({
       ...state,
       formValid:
@@ -66,9 +75,14 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
         state.budget > 0 &&
         state.startDate !== '' &&
         state.startDate <= state.endDate &&
-        state.endDate !== ''
+        state.endDate !== '' &&
+        state.categories.length > 0 &&
+        state.categories.every((c) => c.budget > 0) &&
+        Number(state.budget) >= categoriesBudget
     }))
-  }, [])
+
+    setHasBudgetError(Number(state.budget) < categoriesBudget)
+  }, [state.name, state.budget, state.startDate, state.endDate, state.categories, sumCategoriesBudget])
 
   const handleChanges = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -86,8 +100,6 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       ...state,
       [field]: value
     }))
-
-    validate();
   }
 
   const handleAddCategory = (data: AddPeriod.RemoteAddPeriodCategory) => {
@@ -110,6 +122,8 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       ...state,
       categories: [...state.categories, data]
     }))
+
+    console.log(state.categories)
   }
 
   const handleSubmit = async () => {
@@ -119,6 +133,25 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     }))
 
     const { name, startDate, endDate, budget, categories } = state
+
+    const categoriesBudget = categories.reduce((acc, cur) => {
+      return acc + Number(cur.budget)
+    }, 0)
+
+    if (categoriesBudget > Number(budget)) {
+      setState((state) => ({
+        ...state,
+        loading: false,
+        notification: {
+          message: 'Categories budget is greater than period budget',
+          type: 'error',
+          open: true
+        },
+        formValid: false
+      }))
+
+      return
+    }
 
     await addPeriod.add({
       name,
@@ -154,6 +187,14 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
   return (
     <>
     <div className="container-app">
+      {  
+        hasBudgetError && 
+          <Alert severity="warning">
+            <AlertTitle>Warning</AlertTitle>
+            Categories budget is greater than period budget
+          </Alert>
+      }
+
       <NotficationToaster
         type={state.notification.type}
         message={state.notification.message}
@@ -226,8 +267,6 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
                     ...state,
                     startDate: date
                   }))
-
-                  validate();
                 }}
                 disabled={state.loading}
               />
@@ -254,8 +293,6 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
                     ...state,
                     endDate: date
                   }))
-
-                  validate();
                 }}
                 minDate={startDate}
                 disabled={state.loading}

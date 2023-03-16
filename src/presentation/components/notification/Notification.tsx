@@ -34,7 +34,7 @@ export const NotficationToaster = (
   return (
     <Snackbar 
       open={props.open} 
-      autoHideDuration={2000}
+      autoHideDuration={4000}
       onClose={handleClose}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >

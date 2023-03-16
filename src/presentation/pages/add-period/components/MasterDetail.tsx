@@ -23,6 +23,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
     budget: 0
   })
   const [openModal, setOpenModal] = React.useState(false)
+  const [isFormValid, setIsFormValid] = React.useState(false);
   const [selectedCategory, setSelectedCategory] = React.useState<RemoteCategoryResultModel | null>(null)
 
   const handleAddCategory = () => {
@@ -34,6 +35,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
     props.onAdd(params as AddPeriod.RemoteAddPeriodCategory)
     setOpenModal(false)
     setSelectedCategory(null)
+    setIsFormValid(false)
     resetCategory()
   }
 
@@ -72,6 +74,15 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
       ...old as AddPeriod.RemoteAddPeriodCategory,
       [field]: value
     }))
+
+    validate();
+  }
+
+  const validate = () => {
+    setIsFormValid(
+      selectedCategory !== null &&
+      category?.budget > 0
+    )
   }
 
   return (
@@ -89,7 +100,10 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
             value={selectedCategory}
             sx={{ width: 300, marginBottom: '2%', marginTop: '2%', marginRight: '2%' }}
             getOptionLabel={(option) => option.name}
-            onChange={(e, value) => setSelectedCategory(value)}
+            onChange={(e, value) => {
+              setSelectedCategory(value)
+              validate()
+            }}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => <TextField {...params} label="Categories"/>}
             renderOption={(props, option) => (
@@ -134,6 +148,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
             variant="contained"
             className="button-new"
             onClick={handleAddCategory}
+            disabled={!isFormValid}
           >
             <span className='button-label'>Add</span>
           </LoadingButton>
