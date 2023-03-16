@@ -41,6 +41,10 @@
   border-bottom: 1px solid #9d5bff73;
 }
 
+.card-footer {
+  border-top: 1px solid #9d5bff73;
+}
+
 .button-new {
   background-color: #9d5bff !important;
   border-color: #9d5bffcb !important;
