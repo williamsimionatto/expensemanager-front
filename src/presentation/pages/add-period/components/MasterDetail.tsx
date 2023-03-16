@@ -1,16 +1,19 @@
 import React from "react";
-import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, Fab, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import { RemoteCategoryResultModel } from '../../../../domain/model';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { AddPeriod } from "../../../../domain/usecase";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Props = {
   title: string
   data: AddPeriod.RemoteAddPeriodCategory[]
   categories: RemoteCategoryResultModel[]
   onAdd: (category: AddPeriod.RemoteAddPeriodCategory) => void
+  onRemoveCategory: (categoryId: number) => void
 }
 
 const MasterDetail: React.FC<Props> = (props: Props) => {
@@ -184,7 +187,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
                 <TableRow>
                   <TableCell className='column'>Name</TableCell>
                   <TableCell className='column'>Budget</TableCell>
-                  <TableCell className='column'>Actions</TableCell>
+                  <TableCell className='column' align="center">Actions</TableCell>
                 </TableRow>
               </TableHead>
 
@@ -193,8 +196,35 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
                   props.data.map((category, index) => (
                     <TableRow key={index}>
                       <TableCell className='column'>{category.category.name}</TableCell>
-                      <TableCell className='column'>{formatCurrency(Number(category.budget))}</TableCell>
-                      <TableCell className='column'></TableCell>
+                      <TableCell className='column' width={150}>
+                        {formatCurrency(Number(category.budget))}
+                      </TableCell>
+                      <TableCell 
+                        className='column' 
+                        width={150}
+                        align='center'
+                      >
+                        <Fab
+                          size="small"
+                          style={{ marginRight: '5px' }}
+                        >
+                          <EditIcon 
+                            htmlColor='#9d5bff'
+                            fontSize='small'
+                          />
+                        </Fab>
+
+                        <Fab
+                          size="small"
+                          onClick={() => props.onRemoveCategory(category.category.id)}
+                        >
+                          <DeleteIcon 
+                            htmlColor='red'
+                            fontSize='small'
+                          />
+                        </Fab>
+
+                      </TableCell>
                     </TableRow>
                   ))
                 }

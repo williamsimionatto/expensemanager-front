@@ -102,6 +102,13 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     }))
   }
 
+  const handleRemoveCategory = (id: number) => {
+    setState((state) => ({
+      ...state,
+      categories: state.categories.filter((c) => c.category.id !== id)
+    }))
+  }
+
   const handleAddCategory = (data: AddPeriod.RemoteAddPeriodCategory) => {
     const categoryExists = state.categories.find((c) => c.category.id === data.category.id)
 
@@ -122,8 +129,6 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       ...state,
       categories: [...state.categories, data]
     }))
-
-    console.log(state.categories)
   }
 
   const handleSubmit = async () => {
@@ -307,6 +312,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
             title='Categories'
             data={state.categories}
             onAdd={handleAddCategory}
+            onRemoveCategory={handleRemoveCategory}
             categories={categories}
           />
         </CardContent>
