@@ -2,17 +2,18 @@ import * as React from 'react';
 import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
-import { AddPeriod } from '../../../domain/usecase';
+import { AddPeriod, LoadCategories } from '../../../domain/usecase';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Dayjs } from 'dayjs';
 import { NotficationToaster, NotificationParams } from '../../components/notification';
-
+import { RemoteCategoryResultModel } from '../../../domain/model';
 import SaveIcon from '@mui/icons-material/Save';
 import './style/add-period.css';
 import MasterDetail from './components/MasterDetail';
 
 type Props = {
   addPeriod: AddPeriod
+  loadCategories: LoadCategories
 }
 
 type State = AddPeriod.Params & {
@@ -21,10 +22,11 @@ type State = AddPeriod.Params & {
   notification: NotificationParams
 }
 
-const AddPeriodForm: React.FC<Props> = ({addPeriod} : Props) => {
+const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
+  const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([]);
 
   const [state, setState] = React.useState<State>({
     name: '',
@@ -40,6 +42,12 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod} : Props) => {
       open: false,
     }
   })
+
+  React.useEffect(() => {
+    loadCategories.load().then((categories) => {
+      setCategories(categories)
+    })
+  }, [loadCategories])
 
   const handleRedirect = (route: string, notification?: NotificationParams) => {
     navigate(route, {
@@ -82,8 +90,26 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod} : Props) => {
     validate();
   }
 
-  const handleAddCategory = (category: AddPeriod.RemoteAddPeriodCategory) => {
-    console.log(category)
+  const handleAddCategory = (data: AddPeriod.RemoteAddPeriodCategory) => {
+    const categoryExists = state.categories.find((c) => c.category.id === data.category.id)
+
+    if (categoryExists) {
+      setState((state) => ({
+        ...state,
+        notification: {
+          message: 'Category already added',
+          type: 'warning',
+          open: true
+        }
+      }))
+
+      return
+    }
+
+    setState((state) => ({
+      ...state,
+      categories: [...state.categories, data]
+    }))
   }
 
   const handleSubmit = async () => {
@@ -244,6 +270,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod} : Props) => {
             title='Categories'
             data={state.categories}
             onAdd={handleAddCategory}
+            categories={categories}
           />
         </CardContent>
 
