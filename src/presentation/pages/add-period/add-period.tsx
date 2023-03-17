@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
+import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { AddPeriod, LoadCategories } from '../../../domain/usecase';
@@ -27,6 +27,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
   const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
   const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
   const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([]);
+  const [hasBudgetError, setHasBudgetError] = React.useState(false);
 
   const [state, setState] = React.useState<State>({
     name: '',
@@ -58,7 +59,15 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     })
   }
 
-  const validate = React.useCallback(() => {
+  const sumCategoriesBudget = React.useCallback(() => {
+    return state.categories.reduce((acc, cur) => {
+      return acc + Number(cur.budget)
+    }, 0)
+  }, [state.categories])
+
+  React.useEffect(() => {
+    const categoriesBudget = sumCategoriesBudget()
+
     setState((state) => ({
       ...state,
       formValid:
@@ -66,9 +75,14 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
         state.budget > 0 &&
         state.startDate !== '' &&
         state.startDate <= state.endDate &&
-        state.endDate !== ''
+        state.endDate !== '' &&
+        state.categories.length > 0 &&
+        state.categories.every((c) => c.budget > 0) &&
+        Number(state.budget) >= categoriesBudget
     }))
-  }, [])
+
+    setHasBudgetError(Number(state.budget) < categoriesBudget)
+  }, [state.name, state.budget, state.startDate, state.endDate, state.categories, sumCategoriesBudget])
 
   const handleChanges = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -86,8 +100,13 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       ...state,
       [field]: value
     }))
+  }
 
-    validate();
+  const handleRemoveCategory = (id: number) => {
+    setState((state) => ({
+      ...state,
+      categories: state.categories.filter((c) => c.category.id !== id)
+    }))
   }
 
   const handleAddCategory = (data: AddPeriod.RemoteAddPeriodCategory) => {
@@ -96,11 +115,13 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     if (categoryExists) {
       setState((state) => ({
         ...state,
-        notification: {
-          message: 'Category already added',
-          type: 'warning',
-          open: true
-        }
+        categories: state.categories.map((c) => {
+          if (c.category.id === data.category.id) {
+            return data
+          }
+
+          return c
+        })
       }))
 
       return
@@ -119,6 +140,25 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     }))
 
     const { name, startDate, endDate, budget, categories } = state
+
+    const categoriesBudget = categories.reduce((acc, cur) => {
+      return acc + Number(cur.budget)
+    }, 0)
+
+    if (categoriesBudget > Number(budget)) {
+      setState((state) => ({
+        ...state,
+        loading: false,
+        notification: {
+          message: 'Categories budget is greater than period budget',
+          type: 'error',
+          open: true
+        },
+        formValid: false
+      }))
+
+      return
+    }
 
     await addPeriod.add({
       name,
@@ -153,152 +193,157 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
 
   return (
     <>
-    <div className="container-app">
-      <NotficationToaster
-        type={state.notification.type}
-        message={state.notification.message}
-        open={state.notification.open}
-        setOpen={() => {
-          setState((state) => ({
-            ...state,
-            notification: {
-              ...state.notification,
-              open: false
-            }
-          }))
-        }}
-      />
+      <div className="container-app">
+        {  
+          hasBudgetError && 
+            <Alert severity="warning">
+              <AlertTitle>Warning</AlertTitle>
+              Categories budget is greater than period budget
+            </Alert>
+        }
 
-      <Card>
-        <CardHeader title="Add Period" className="card-header" />
+        <NotficationToaster
+          type={state.notification.type}
+          message={state.notification.message}
+          open={state.notification.open}
+          setOpen={() => {
+            setState((state) => ({
+              ...state,
+              notification: {
+                ...state.notification,
+                open: false
+              }
+            }))
+          }}
+        />
 
-        <CardContent style={{
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <form>
-            <TextField
-              sx={{ m: 1, width: '25ch' }}
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Name"
-              type="text"
-              value={state.name}
-              onChange={(e) => handleChanges(e, 'name')}
-              variant="outlined"
-              helperText={state.name === '' ? 'This field is required' : ''}
-              color={state.name === '' ? 'secondary' : 'success'}
-              disabled={state.loading}
-              required
-            />
+        <Card>
+          <CardHeader title="Add Period" className="card-header" />
 
-            <TextField
-              sx={{ m: 1, width: '25ch' }}
-              margin="dense"
-              id="budget"
-              label="Budget (R$)"
-              value={state.budget}
-              type="text"
-              onChange={(e) => handleChanges(e, 'budget')}
-              variant="outlined"
-              helperText={state.budget <= 0 ? 'This field is required' : ''}
-              color={state.budget <= 0 ? 'secondary' : 'success'}
-              disabled={state.loading}
-              required
-              inputProps={{min: 0, style: { textAlign: 'right' }}}
-            />
-
-            <FormControl
-              sx={{ m: 1, width: '25ch' }}
-              variant="outlined"
-              margin='dense'
-              required
-            >
-              <DatePicker
-                label="Start Date"
-                value={startDate}
-                onChange={(newValue) => {
-                  setStartDate(newValue);
-                  const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
-
-                  setState((state) => ({
-                    ...state,
-                    startDate: date
-                  }))
-
-                  validate();
-                }}
+          <CardContent style={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
+            <form>
+              <TextField
+                sx={{ m: 1, width: '25ch' }}
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Name"
+                type="text"
+                value={state.name}
+                onChange={(e) => handleChanges(e, 'name')}
+                variant="outlined"
+                helperText={state.name === '' ? 'This field is required' : ''}
+                color={state.name === '' ? 'secondary' : 'success'}
                 disabled={state.loading}
+                required
               />
-              <FormHelperText>
-                {state.startDate === '' ? 'This field is required' : ''}
-              </FormHelperText>
-            </FormControl>
 
-            <FormControl
-              sx={{ m: 1, width: '25ch' }}
-              variant="outlined"
-              margin='dense'
-              color={state.startDate === '' ? 'secondary' : 'success'}
-              required
-            >
-              <DatePicker
-                label="End Date"
-                value={endDate}
-                onChange={(newValue) => {
-                  setEndDate(newValue);
-                  const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
-
-                  setState((state) => ({
-                    ...state,
-                    endDate: date
-                  }))
-
-                  validate();
-                }}
-                minDate={startDate}
+              <TextField
+                sx={{ m: 1, width: '25ch' }}
+                margin="dense"
+                id="budget"
+                label="Budget (R$)"
+                value={state.budget}
+                type="text"
+                onChange={(e) => handleChanges(e, 'budget')}
+                variant="outlined"
+                helperText={state.budget <= 0 ? 'This field is required' : ''}
+                color={state.budget <= 0 ? 'secondary' : 'success'}
                 disabled={state.loading}
+                required
+                inputProps={{min: 0, style: { textAlign: 'right' }}}
               />
-              <FormHelperText>
-                {state.endDate === '' ? 'This field is required' : ''}
-              </FormHelperText>
-            </FormControl>
-          </form>
 
-          <MasterDetail 
-            title='Categories'
-            data={state.categories}
-            onAdd={handleAddCategory}
-            categories={categories}
-          />
-        </CardContent>
+              <FormControl
+                sx={{ m: 1, width: '25ch' }}
+                variant="outlined"
+                margin='dense'
+                required
+              >
+                <DatePicker
+                  label="Start Date"
+                  value={startDate}
+                  onChange={(newValue) => {
+                    setStartDate(newValue);
+                    const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
 
-        <CardActions className='d-flex-right card-footer'>
-          <Button
-            color="secondary"
-            onClick={() => handleRedirect('/periods')}
-            className="button-cancel"
-            variant='outlined'
-          >
-            <span className='button-label'>Cancel</span>
-          </Button>
+                    setState((state) => ({
+                      ...state,
+                      startDate: date
+                    }))
+                  }}
+                  disabled={state.loading}
+                />
+                <FormHelperText>
+                  {state.startDate === '' ? 'This field is required' : ''}
+                </FormHelperText>
+              </FormControl>
 
-          <LoadingButton
-            color="secondary"
-            loadingPosition="end"
-            endIcon={<SaveIcon className='icon'/>}
-            variant="contained"
-            className="button-new"
-            loading={state.loading}
-            disabled={!state.formValid}
-            onClick={handleSubmit}
-          >
-            <span className='button-label'>Save</span>
-          </LoadingButton>
-        </CardActions>
-      </Card>
-    </div>
+              <FormControl
+                sx={{ m: 1, width: '25ch' }}
+                variant="outlined"
+                margin='dense'
+                color={state.startDate === '' ? 'secondary' : 'success'}
+                required
+              >
+                <DatePicker
+                  label="End Date"
+                  value={endDate}
+                  onChange={(newValue) => {
+                    setEndDate(newValue);
+                    const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
+
+                    setState((state) => ({
+                      ...state,
+                      endDate: date
+                    }))
+                  }}
+                  minDate={startDate}
+                  disabled={state.loading}
+                />
+                <FormHelperText>
+                  {state.endDate === '' ? 'This field is required' : ''}
+                </FormHelperText>
+              </FormControl>
+            </form>
+
+            <MasterDetail 
+              title='Categories'
+              data={state.categories}
+              onAdd={handleAddCategory}
+              onRemoveCategory={handleRemoveCategory}
+              categories={categories}
+            />
+          </CardContent>
+
+          <CardActions className='d-flex-right card-footer'>
+            <Button
+              color="secondary"
+              onClick={() => handleRedirect('/periods')}
+              className="button-cancel"
+              variant='outlined'
+            >
+              <span className='button-label'>Cancel</span>
+            </Button>
+
+            <LoadingButton
+              color="secondary"
+              loadingPosition="end"
+              endIcon={<SaveIcon className='icon'/>}
+              variant="contained"
+              className="button-new"
+              loading={state.loading}
+              disabled={!state.formValid}
+              onClick={handleSubmit}
+            >
+              <span className='button-label'>Save</span>
+            </LoadingButton>
+          </CardActions>
+        </Card>
+      </div>
     </>
   )
 }
