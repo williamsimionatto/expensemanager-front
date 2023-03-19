@@ -100,15 +100,19 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
       <Dialog
         open={openModal}
         onClose={() => setOpenModal(false)}
+        maxWidth="md"
+        fullWidth
       >
         <DialogTitle>Add Category to Period</DialogTitle>
-        <DialogContent>
+        <DialogContent
+          className="d-flex"
+        >
           <Autocomplete
-            disablePortal
+            disablePortal={false}
             id="combo-box-demo"
             options={props.categories}
             value={selectedCategory}
-            sx={{ width: 300, marginBottom: '2%', marginTop: '2%', marginRight: '2%' }}
+            sx={{ width: 300, marginTop: '1%' , marginRight: '3%' }}
             getOptionLabel={(option) => option.name}
             onChange={(e, value) => {
               setSelectedCategory(value)
@@ -116,13 +120,6 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
             }}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => <TextField {...params} label="Categories"/>}
-            renderOption={(props, option) => (
-              <>
-                <li {...props} style={{ backgroundColor: 'white', color: 'black' }} key={option.id}>
-                  {option.name}
-                </li>
-              </>
-            )}
           />
 
           <TextField

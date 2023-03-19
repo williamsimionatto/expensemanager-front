@@ -196,7 +196,12 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       <div className="container-app">
         {  
           hasBudgetError && 
-            <Alert severity="warning">
+            <Alert severity="warning"
+              style={{
+                backgroundColor: '#ff9a2275',
+                color: '#fff'
+              }}
+            >
               <AlertTitle>Warning</AlertTitle>
               Categories budget is greater than period budget
             </Alert>
@@ -322,7 +327,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
           <CardActions className='d-flex-right card-footer'>
             <Button
               color="secondary"
-              onClick={() => handleRedirect('/periods')}
+              onClick={() => handleRedirect('/periods', undefined)}
               className="button-cancel"
               variant='outlined'
             >

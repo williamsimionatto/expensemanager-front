@@ -40,11 +40,13 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
   React.useEffect(() => {
     if (location.state) {
       const notification = location.state.notification
-      setShowNotification({
-        message: notification?.message || 'Category inserted successfully',
-        type: notification?.type || 'success',
-        open: true,
-      })
+      if (notification) {
+        setShowNotification({
+          message: notification.message,
+          type: notification?.type,
+          open: true,
+        })
+      }
     }
 
     navigate(location.pathname, { state: null})
