@@ -9,7 +9,7 @@ export class RemoteDeletePeriodCategory implements DeletePeriodCategory {
 
   async delete(periodId: string, categoryId: string): Promise<void> {
     const httpResponse = await this.httpClient.request({
-      url: `${this.url}/${periodId}/${categoryId}`,
+      url: `${this.url}/${periodId}/category/${categoryId}`,
       method: 'delete'
     });
 
