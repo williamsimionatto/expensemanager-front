@@ -1,7 +1,7 @@
 import { RemoteExpenseResultModel } from "../model"
 
 export interface AddExpense {
-  add: (params: AddExpense.Params) => Promise<AddExpense.Result>
+  add: (params: AddExpense.Params) => Promise<AddExpense.Result | AddExpense.Error>
 }
 
 export namespace AddExpense {
@@ -14,4 +14,9 @@ export namespace AddExpense {
   }
 
   export type Result = RemoteExpenseResultModel
+  export type Error =  {
+    details: string;
+    message: string;
+    timestamp: Date;
+  }
 }
