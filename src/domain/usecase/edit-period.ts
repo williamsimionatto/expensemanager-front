@@ -1,7 +1,7 @@
 import { RemoteCategoryResultModel, RemotePeriodResultModel } from "../model"
 
 export interface EditPeriod {
-  edit: (id: string, params: EditPeriod.Params) => Promise<EditPeriod.Result>
+  edit: (id: string, params: EditPeriod.Params) => Promise<EditPeriod.Result | EditPeriod.Error>
 }
 
 export namespace EditPeriod {
