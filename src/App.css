@@ -68,3 +68,13 @@
   background-color: #9d5bff !important;
   color: #ffffff !important;
 }
+
+.d-flex {
+  display: flex;
+}
+
+.d-flex-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
