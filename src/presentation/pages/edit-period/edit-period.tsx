@@ -32,7 +32,10 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
   const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([]);
   const [hasBudgetError, setHasBudgetError] = React.useState(false);
   const [showDialogConfirmation, setShowDialogConfirmation] = React.useState(false);
-  const [deleteCategoryId, setDeleteCategoryId] = React.useState<Number | undefined>(undefined);
+  const [deleteCategory, setDeleteCategory] = React.useState({
+    id: 0,
+    remote: false
+  });
 
   const [state, setState] = React.useState<State>({
     id: params.periodId ?? '',
@@ -122,18 +125,32 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
     }))
   }
 
-  const handleRemoveCategory = (id: number) => {
-    setShowDialogConfirmation(true)
-    setDeleteCategoryId(id)
+  const handleRemoveCategory = (id: number, remote: boolean) => {
+    setDeleteCategory({
+      id,
+      remote
+    })
+
+    if (remote) {
+      setShowDialogConfirmation(true)
+      return
+    }
+
+    setState((state) => ({
+      ...state,
+      categories: state.categories.filter((c) => c.category.id !== id)
+    }))
+
+    return
   }
 
   const handleConfirmRemoveCategory = async () => {
     await deletePeriodCategory
-      .delete(state.id, deleteCategoryId?.toString() ?? '0')
+      .delete(state.id, deleteCategory.id?.toString() ?? '0')
       .then(() => {
         setState((state) => ({
           ...state,
-          categories: state.categories.filter((c) => c.category.id !== deleteCategoryId)
+          categories: state.categories.filter((c) => c.category.id !== deleteCategory.id)
         }))
       }).catch((error) => {
         setState((state) => ({
@@ -147,7 +164,10 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
       })
 
     setShowDialogConfirmation(false)
-    setDeleteCategoryId(undefined)
+    setDeleteCategory({
+      id: 0,
+      remote: false
+    })
   }
 
   const handleAddCategory = (data: EditPeriod.RemoteEditPeriodCategory) => {

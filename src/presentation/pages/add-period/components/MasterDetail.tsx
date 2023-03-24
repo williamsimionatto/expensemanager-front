@@ -14,7 +14,7 @@ type Props = {
   data: AddPeriod.RemoteAddPeriodCategory[]
   categories: RemoteCategoryResultModel[]
   onAdd: (category: AddPeriod.RemoteAddPeriodCategory) => void
-  onRemoveCategory: (categoryId: number) => void
+  onRemoveCategory: (categoryId: number, remote: boolean) => void
 }
 
 const MasterDetail: React.FC<Props> = (props: Props) => {
@@ -81,6 +81,10 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
 
     validate();
   }
+
+  React.useEffect(() => {
+    validate()
+  })
 
   const validate = () => {
     setIsFormValid(
@@ -198,11 +202,11 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
 
               <TableBody>
                 {
-                  props.data.map((category, index) => (
+                  props.data.map((data, index) => (
                     <TableRow key={index}>
-                      <TableCell className='column'>{category.category.name}</TableCell>
+                      <TableCell className='column'>{data.category.name}</TableCell>
                       <TableCell className='column' width={150}>
-                        {formatCurrency(Number(category.budget))}
+                        {formatCurrency(Number(data.budget))}
                       </TableCell>
                       <TableCell 
                         className='column' 
@@ -212,7 +216,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
                         <Fab
                           size="small"
                           style={{ marginRight: '5px' }}
-                          onClick={() => handleEditCategory(category)}
+                          onClick={() => handleEditCategory(data)}
                         >
                           <EditIcon 
                             htmlColor='#9d5bff'
@@ -222,7 +226,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
 
                         <Fab
                           size="small"
-                          onClick={() => props.onRemoveCategory(category.category.id)}
+                          onClick={() => props.onRemoveCategory(data.category.id, data.id !== undefined)}
                         >
                           <DeleteIcon 
                             htmlColor='red'

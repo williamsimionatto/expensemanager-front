@@ -21,6 +21,7 @@ export namespace AddPeriod {
   }
 
   export type RemoteAddPeriodCategory = {
+    id?: string
     category: RemoteCategoryResultModel
     budget: number
   }
