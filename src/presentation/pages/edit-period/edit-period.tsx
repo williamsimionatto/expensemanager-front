@@ -1,8 +1,8 @@
-import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material"
+import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogTitle, TextField } from "@mui/material"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { RemoteCategoryResultModel } from "../../../domain/model"
-import { EditPeriod, LoadCategories, LoadPeriodById } from "../../../domain/usecase"
+import { DeletePeriodCategory, EditPeriod, LoadCategories, LoadPeriodById } from "../../../domain/usecase"
 import { NotficationToaster, NotificationParams } from "../../components/notification"
 import MasterDetail from "../add-period/components/MasterDetail"
 import { LoadingButton } from "@mui/lab"
@@ -12,6 +12,7 @@ type Props = {
   editPeriod: EditPeriod
   loadPeriodById: LoadPeriodById
   loadCategories: LoadCategories
+  deletePeriodCategory: DeletePeriodCategory
 }
 
 type State = EditPeriod.Params & {
@@ -25,11 +26,13 @@ type State = EditPeriod.Params & {
   }
 }
 
-const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCategories } : Props) => {
+const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCategories, deletePeriodCategory } : Props) => {
   const navigate = useNavigate();
   const params = useParams();
   const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([]);
   const [hasBudgetError, setHasBudgetError] = React.useState(false);
+  const [showDialogConfirmation, setShowDialogConfirmation] = React.useState(false);
+  const [deleteCategoryId, setDeleteCategoryId] = React.useState<Number | undefined>(undefined);
 
   const [state, setState] = React.useState<State>({
     id: params.periodId ?? '',
@@ -120,10 +123,31 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
   }
 
   const handleRemoveCategory = (id: number) => {
-    setState((state) => ({
-      ...state,
-      categories: state.categories.filter((c) => c.category.id !== id)
-    }))
+    setShowDialogConfirmation(true)
+    setDeleteCategoryId(id)
+  }
+
+  const handleConfirmRemoveCategory = async () => {
+    await deletePeriodCategory
+      .delete(state.id, deleteCategoryId?.toString() ?? '0')
+      .then(() => {
+        setState((state) => ({
+          ...state,
+          categories: state.categories.filter((c) => c.category.id !== deleteCategoryId)
+        }))
+      }).catch((error) => {
+        setState((state) => ({
+          ...state,
+          notification: {
+            message: error.message,
+            type: 'error',
+            open: true
+          }
+        }))
+      })
+
+    setShowDialogConfirmation(false)
+    setDeleteCategoryId(undefined)
   }
 
   const handleAddCategory = (data: EditPeriod.RemoteEditPeriodCategory) => {
@@ -238,6 +262,41 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
             }))
           }}
         />
+
+        <Dialog
+          open={showDialogConfirmation}
+          onClose={() => {
+            setState((state) => ({
+              ...state,
+              openDialog: false
+            }))
+          }}
+        >
+          <DialogTitle>
+            This action will delete all expenses linked to this category. Do you wish to continue? 
+          </DialogTitle>
+
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setShowDialogConfirmation(false)
+              }}
+              className="button-cancel"
+              variant='outlined'
+              color="secondary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleConfirmRemoveCategory()}
+              color="secondary"
+              variant="contained"
+              className="button-new"
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Card>
           <CardHeader title="Edit Period" className="card-header" />

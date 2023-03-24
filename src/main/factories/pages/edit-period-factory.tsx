@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import EditPeriodForm from "../../../presentation/pages/edit-period/edit-period";
-import { makeRemoteEditPeriod, makeRemoteLoadCategories, makeRemoteLoadPeriodById } from "../usecases";
+import { makeRemoteDeletePeriodCategory, makeRemoteEditPeriod, makeRemoteLoadCategories, makeRemoteLoadPeriodById } from "../usecases";
 
 export default function makeEditPeriodPage(): ReactNode {
   return (
@@ -9,6 +9,7 @@ export default function makeEditPeriodPage(): ReactNode {
         editPeriod={makeRemoteEditPeriod()}
         loadCategories={makeRemoteLoadCategories()}
         loadPeriodById={makeRemoteLoadPeriodById()}
+        deletePeriodCategory={makeRemoteDeletePeriodCategory()}
       />
     </>
   )
