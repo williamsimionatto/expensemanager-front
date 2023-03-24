@@ -1,34 +1,41 @@
-import * as React from 'react';
-import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
-import { LoadingButton } from '@mui/lab';
-import { useNavigate } from 'react-router-dom';
-import { AddPeriod, LoadCategories } from '../../../domain/usecase';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from 'dayjs';
-import { NotficationToaster, NotificationParams } from '../../components/notification';
-import { RemoteCategoryResultModel } from '../../../domain/model';
+import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogTitle, TextField } from "@mui/material"
+import React from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { RemoteCategoryResultModel } from "../../../domain/model"
+import { DeletePeriodCategory, EditPeriod, LoadCategories, LoadPeriodById } from "../../../domain/usecase"
+import { NotficationToaster, NotificationParams } from "../../components/notification"
+import MasterDetail from "../add-period/components/MasterDetail"
+import { LoadingButton } from "@mui/lab"
 import SaveIcon from '@mui/icons-material/Save';
-import MasterDetail from './components/MasterDetail';
 
 type Props = {
-  addPeriod: AddPeriod
+  editPeriod: EditPeriod
+  loadPeriodById: LoadPeriodById
   loadCategories: LoadCategories
+  deletePeriodCategory: DeletePeriodCategory
 }
 
-type State = AddPeriod.Params & {
+type State = EditPeriod.Params & {
+  id: string
   loading: boolean
   formValid: boolean
-  notification: NotificationParams
+  notification: {
+    message: string
+    type: 'success' | 'error'
+    open: boolean
+  }
 }
 
-const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => {
+const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCategories, deletePeriodCategory } : Props) => {
   const navigate = useNavigate();
-  const [startDate, setStartDate] = React.useState<Dayjs | null>(null);
-  const [endDate, setEndDate] = React.useState<Dayjs | null>(null);
+  const params = useParams();
   const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([]);
   const [hasBudgetError, setHasBudgetError] = React.useState(false);
+  const [showDialogConfirmation, setShowDialogConfirmation] = React.useState(false);
+  const [deleteCategoryId, setDeleteCategoryId] = React.useState<Number | undefined>(undefined);
 
   const [state, setState] = React.useState<State>({
+    id: params.periodId ?? '',
     name: '',
     startDate: '',
     endDate: '',
@@ -47,7 +54,21 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
     loadCategories.load().then((categories) => {
       setCategories(categories)
     })
-  }, [loadCategories])
+
+    loadPeriodById
+      .loadById(state.id)
+      .then((period) => {
+        setState((old) => ({
+          ...old,
+          id: `${period.id}`,
+          name: period.name,
+          startDate: new Date((period.startDate)).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' }),
+          endDate: new Date((period.endDate)).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' }),
+          budget: period.budget,
+          categories: period.categories
+        }))
+      })
+  }, [loadCategories, loadPeriodById, state.id])
 
   const handleRedirect = (route: string, notification?: NotificationParams) => {
     navigate(route, {
@@ -102,13 +123,34 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
   }
 
   const handleRemoveCategory = (id: number) => {
-    setState((state) => ({
-      ...state,
-      categories: state.categories.filter((c) => c.category.id !== id)
-    }))
+    setShowDialogConfirmation(true)
+    setDeleteCategoryId(id)
   }
 
-  const handleAddCategory = (data: AddPeriod.RemoteAddPeriodCategory) => {
+  const handleConfirmRemoveCategory = async () => {
+    await deletePeriodCategory
+      .delete(state.id, deleteCategoryId?.toString() ?? '0')
+      .then(() => {
+        setState((state) => ({
+          ...state,
+          categories: state.categories.filter((c) => c.category.id !== deleteCategoryId)
+        }))
+      }).catch((error) => {
+        setState((state) => ({
+          ...state,
+          notification: {
+            message: error.message,
+            type: 'error',
+            open: true
+          }
+        }))
+      })
+
+    setShowDialogConfirmation(false)
+    setDeleteCategoryId(undefined)
+  }
+
+  const handleAddCategory = (data: EditPeriod.RemoteEditPeriodCategory) => {
     const categoryExists = state.categories.find((c) => c.category.id === data.category.id)
 
     if (categoryExists) {
@@ -138,7 +180,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       loading: true
     }))
 
-    const { name, startDate, endDate, budget, categories } = state
+    const { id, name, startDate, endDate, budget, categories } = state
 
     const categoriesBudget = categories.reduce((acc, cur) => {
       return acc + Number(cur.budget)
@@ -159,7 +201,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       return
     }
 
-    await addPeriod.add({
+    await editPeriod.edit(id, {
       name,
       startDate,
       endDate,
@@ -173,7 +215,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
       }))
 
       handleRedirect('/periods', {
-        message: 'Period added successfully',
+        message: 'Period updated successfully',
         type: 'success',
         open: true
       })
@@ -221,14 +263,60 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
           }}
         />
 
+        <Dialog
+          open={showDialogConfirmation}
+          onClose={() => {
+            setState((state) => ({
+              ...state,
+              openDialog: false
+            }))
+          }}
+        >
+          <DialogTitle>
+            This action will delete all expenses linked to this category. Do you wish to continue? 
+          </DialogTitle>
+
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setShowDialogConfirmation(false)
+              }}
+              className="button-cancel"
+              variant='outlined'
+              color="secondary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleConfirmRemoveCategory()}
+              color="secondary"
+              variant="contained"
+              className="button-new"
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Card>
-          <CardHeader title="Add Period" className="card-header" />
+          <CardHeader title="Edit Period" className="card-header" />
 
           <CardContent style={{
             display: 'flex',
             flexDirection: 'column'
           }}>
             <form>
+              <TextField
+                sx={{ m: 1, width: '25ch' }}
+                margin="dense"
+                id="id"
+                label="Code"
+                type="text"
+                value={state.id}
+                variant="outlined"
+                disabled={true}
+              />
+
               <TextField
                 sx={{ m: 1, width: '25ch' }}
                 autoFocus
@@ -261,66 +349,38 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
                 inputProps={{min: 0, style: { textAlign: 'right' }}}
               />
 
-              <FormControl
+              <TextField
                 sx={{ m: 1, width: '25ch' }}
+                margin="dense"
+                id="startDate"
+                label="Start Date"
+                type="text"
+                value={state.startDate}
                 variant="outlined"
-                margin='dense'
-                required
-              >
-                <DatePicker
-                  label="Start Date"
-                  value={startDate}
-                  onChange={(newValue) => {
-                    setStartDate(newValue);
-                    const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
-
-                    setState((state) => ({
-                      ...state,
-                      startDate: date
-                    }))
-                  }}
-                  disabled={state.loading}
-                />
-                <FormHelperText>
-                  {state.startDate === '' ? 'This field is required' : ''}
-                </FormHelperText>
-              </FormControl>
-
-              <FormControl
-                sx={{ m: 1, width: '25ch' }}
-                variant="outlined"
-                margin='dense'
                 color={state.startDate === '' ? 'secondary' : 'success'}
-                required
-              >
-                <DatePicker
-                  label="End Date"
-                  value={endDate}
-                  onChange={(newValue) => {
-                    setEndDate(newValue);
-                    const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
+                disabled={true}
+              />
 
-                    setState((state) => ({
-                      ...state,
-                      endDate: date
-                    }))
-                  }}
-                  minDate={startDate}
-                  disabled={state.loading}
-                />
-                <FormHelperText>
-                  {state.endDate === '' ? 'This field is required' : ''}
-                </FormHelperText>
-              </FormControl>
+              <TextField
+                sx={{ m: 1, width: '25ch' }}
+                margin="dense"
+                id="endDate"
+                label="End Date"
+                type="text"
+                value={state.endDate}
+                variant="outlined"
+                color={state.endDate === '' ? 'secondary' : 'success'}
+                disabled={true}
+              />
+
+              <MasterDetail
+                title='Categories'
+                data={state.categories}
+                onAdd={handleAddCategory}
+                onRemoveCategory={handleRemoveCategory}
+                categories={categories}
+              />
             </form>
-
-            <MasterDetail 
-              title='Categories'
-              data={state.categories}
-              onAdd={handleAddCategory}
-              onRemoveCategory={handleRemoveCategory}
-              categories={categories}
-            />
           </CardContent>
 
           <CardActions className='d-flex-right card-footer'>
@@ -352,4 +412,4 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
   )
 }
 
-export default AddPeriodForm
+export default EditPeriodForm

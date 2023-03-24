@@ -7,6 +7,7 @@ import { LoadingButton } from "@mui/lab";
 import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import './MasterDetail.css'
 
 type Props = {
   title: string

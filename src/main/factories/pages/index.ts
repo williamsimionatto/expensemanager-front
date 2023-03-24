@@ -1,3 +1,5 @@
 export * from './categories-list-factory'
 export * from './add-category-factory'
 export * from './add-period-factory'
+export * from './edit-category-factory'
+export * from './edit-period-factory'
