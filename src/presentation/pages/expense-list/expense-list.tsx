@@ -44,7 +44,7 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
           open: true,
         })
       })
-  })
+  }, [loadExpenses])
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
