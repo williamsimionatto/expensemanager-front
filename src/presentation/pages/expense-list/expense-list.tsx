@@ -6,6 +6,7 @@ import { NotficationToaster, NotificationParams } from "../../components/notific
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TablePaginationActions } from "../../components/table"
+import { ConfirmationDialog } from "../../components/confirmation-dialog/Confirmation-Dialog"
 
 type Props = {
   loadExpenses: LoadExpenses
@@ -13,11 +14,14 @@ type Props = {
 }
 
 const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) => {
-  const [data, setData] = React.useState<RemoteExpenseListResultModel[]>([])
   const [loading, setLoading] = React.useState(true);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [showDialogConfirmation, setShowDialogConfirmation] = React.useState(false)
 
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = React.useState(0);
+  const [deleteExpenseId, setDeleteExpenseId] = React.useState(0)
+
+  const [data, setData] = React.useState<RemoteExpenseListResultModel[]>([])
   const [showNotification, setShowNotification] = React.useState<NotificationParams>({
     message: '',
     type: 'success',
@@ -60,17 +64,19 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
   }
 
-  const handleDelete = (id: number) => {
+  const handleDelete = () => {
     deleteExpense
-      .delete(id)
+      .delete(deleteExpenseId)
       .then(() => {
-        const newData = data.filter((item) => item.id !== id)
+        const newData = data.filter((item) => item.id !== deleteExpenseId)
         setData(newData)
         setShowNotification({
           message: 'Expense deleted successfully',
           type: 'success',
           open: true,
         })
+
+        setShowDialogConfirmation(false)
       })
       .catch((error) => {
         setShowNotification({
@@ -88,6 +94,13 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
         message={showNotification.message}
         open={showNotification.open}
         setOpen={() => setShowNotification({ ...showNotification, open: false })}
+      />
+
+      <ConfirmationDialog
+        message="Are you sure you want to delete this expense?"
+        open={showDialogConfirmation}
+        handleClose={() => setShowDialogConfirmation(false)}
+        handleConfirm={() => handleDelete()}
       />
 
       <div className="container-app">
@@ -155,7 +168,10 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
                           <TableCell align="right" width={50}>
                             <IconButton
                               aria-label="delete"
-                              onClick={() => handleDelete(row.id)}
+                              onClick={() => {
+                                setDeleteExpenseId(row.id)
+                                setShowDialogConfirmation(true)
+                              }}
                             >
                               <DeleteIcon
                                 htmlColor='red'
