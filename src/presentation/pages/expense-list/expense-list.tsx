@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, CardHeader, CircularProgress, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow } from "@mui/material"
 import React from "react"
 import { RemoteExpenseListResultModel } from "../../../domain/model"
-import { LoadExpenses } from "../../../domain/usecase"
+import { DeleteExpense, LoadExpenses } from "../../../domain/usecase"
 import { NotficationToaster, NotificationParams } from "../../components/notification"
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -9,9 +9,10 @@ import { TablePaginationActions } from "../../components/table"
 
 type Props = {
   loadExpenses: LoadExpenses
+  deleteExpense: DeleteExpense
 }
 
-const ExpenseList: React.FC<Props> = ({ loadExpenses }: Props) => {
+const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) => {
   const [data, setData] = React.useState<RemoteExpenseListResultModel[]>([])
   const [loading, setLoading] = React.useState(true);
   const [page, setPage] = React.useState(0);
@@ -57,6 +58,27 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses }: Props) => {
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  }
+
+  const handleDelete = (id: number) => {
+    deleteExpense
+      .delete(id)
+      .then(() => {
+        const newData = data.filter((item) => item.id !== id)
+        setData(newData)
+        setShowNotification({
+          message: 'Expense deleted successfully',
+          type: 'success',
+          open: true,
+        })
+      })
+      .catch((error) => {
+        setShowNotification({
+          message: error.message,
+          type: 'error',
+          open: true,
+        })
+      })
   }
 
   return (
@@ -132,7 +154,8 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses }: Props) => {
 
                           <TableCell align="right" width={50}>
                             <IconButton
-                              aria-label="delete" 
+                              aria-label="delete"
+                              onClick={() => handleDelete(row.id)}
                             >
                               <DeleteIcon
                                 htmlColor='red'
