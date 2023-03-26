@@ -181,7 +181,7 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                               onClick={() => handleRedirect(`/periods/${row.id}`)}
                             >
                               <EditIcon
-                                htmlColor='#9d5bff'
+                                htmlColor='#F64348'
                                 fontSize='small'
                               />
                             </IconButton>

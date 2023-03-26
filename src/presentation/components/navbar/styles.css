@@ -16,7 +16,7 @@ body {
   border: 0;
   padding: 0;
   background: transparent;
-  color: #9d5bff;
+  color: #F64348;
   cursor: pointer;
 }
 
@@ -29,7 +29,7 @@ body {
   border: 0;
   padding: 0;
   background: transparent;
-  color: #9d5bff;
+  color: #F64348;
   cursor: pointer;
 }
 
@@ -187,5 +187,5 @@ body {
 }
 
 span:hover {
-  color: #9d5bff;
+  color: #F64348;
 }

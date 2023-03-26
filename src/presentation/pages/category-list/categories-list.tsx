@@ -159,7 +159,7 @@ const CategoryList: React.FC<Props> = ({ loadCategories }: Props) => {
                                 onClick={() => handleRedirect(`/categories/${row.id}`)}
                               >
                                 <EditIcon 
-                                  htmlColor='#9d5bff'
+                                  htmlColor='#F64348'
                                   fontSize='small'
                                 />
                               </IconButton>

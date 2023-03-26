@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import './style/add-category.css'
 import { NotficationToaster, NotificationParams } from '../../components/notification';
+import { withStyles } from '@mui/styles';
 
 type Props = {
   addCategory: AddCategory
@@ -21,6 +22,28 @@ type State = AddCategory.Params & {
     open: boolean
   }
 }
+
+const Input = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: 'white',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#F79D9F',
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'white',
+      },
+      '&:hover fieldset': {
+        borderColor: 'white',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#F79D9F',
+      }
+    },
+  },
+})(TextField);
 
 const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
   const navigate = useNavigate();
@@ -120,7 +143,7 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
 
           <CardContent>
             <form>
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 autoFocus
                 margin="dense"
@@ -136,7 +159,7 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
                 required
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '75ch' }}
                 margin="dense"
                 id="description"

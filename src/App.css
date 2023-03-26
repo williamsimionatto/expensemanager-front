@@ -38,16 +38,16 @@
 }
 
 .card-header {
-  border-bottom: 1px solid #9d5bff73;
+  border-bottom: 1px solid #F6434873;
 }
 
 .card-footer {
-  border-top: 1px solid #9d5bff73;
+  border-top: 1px solid #F6434873;
 }
 
 .button-new {
-  background-color: #9d5bff !important;
-  border-color: #9d5bffcb !important;
+  background-color: #F64348 !important;
+  border-color: #F64348cb !important;
   color: #ffffff !important;
 }
 
@@ -61,11 +61,11 @@
 
 .button-cancel {
   color: #ffffff !important;
-  border-color: #9d5bff73 !important;
+  border-color: #F6434873 !important;
 }
 
 .button-cancel:hover {
-  background-color: #9d5bff !important;
+  background-color: #F64348 !important;
   color: #ffffff !important;
 }
 

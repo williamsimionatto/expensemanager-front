@@ -219,7 +219,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
                           onClick={() => handleEditCategory(data)}
                         >
                           <EditIcon 
-                            htmlColor='#9d5bff'
+                            htmlColor='#F64348'
                             fontSize='small'
                           />
                         </Fab>
