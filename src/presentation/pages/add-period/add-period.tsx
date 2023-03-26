@@ -314,7 +314,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
               </FormControl>
             </form>
 
-            <MasterDetail 
+            <MasterDetail
               title='Categories'
               data={state.categories}
               onAdd={handleAddCategory}
