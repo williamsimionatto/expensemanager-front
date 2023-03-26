@@ -6,8 +6,8 @@ import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
 
 import React from "react"
-import { RemotePeriodListResultModel } from "../../../domain/model"
-import { AddExpense, LoadPeriods } from "../../../domain/usecase"
+import { RemoteCategoryResultModel, RemotePeriodListResultModel } from "../../../domain/model"
+import { AddExpense, LoadPeriodCategories, LoadPeriods } from "../../../domain/usecase"
 import { NotificationParams } from "../../components/notification"
 import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from "react-router-dom"
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom"
 type Props = {
   addExpense: AddExpense
   loadPeriods: LoadPeriods
+  loadPeriodCategories: LoadPeriodCategories
 }
 
 type State = AddExpense.Params & {
@@ -23,13 +24,15 @@ type State = AddExpense.Params & {
   notification: NotificationParams
 }
 
-const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
+const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCategories }) => {
   dayjs.extend(utc)
   dayjs.extend(timezone)
 
   const navigate = useNavigate();
   const [periods, setPeriods] = React.useState<RemotePeriodListResultModel[]>([])
+  const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([])
   const [period, setPeriod] = React.useState<RemotePeriodListResultModel | null>(null)
+  const [category, setCategory] = React.useState<RemoteCategoryResultModel | null>(null)
   const [date, setDate] = React.useState<Dayjs | null>(null);
 
   const [state, setState] = React.useState<State>({
@@ -52,6 +55,14 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
       setPeriods(result)
     })
   }, [loadPeriods])
+
+  React.useEffect(() => {
+    if (period) {
+      loadPeriodCategories.load(period.id.toString()).then((result) => {
+        setCategories(result)
+      })
+    }
+  }, [loadPeriodCategories, period])
 
   const handleRedirect = (route: string, notification?: NotificationParams) => {
     navigate(route, {
