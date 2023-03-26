@@ -234,6 +234,16 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                         date: date
                       }))
                     }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: "#F79D9F"
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: "#F79D9F"
+                        },
+                      }
+                    }}
                     minDate={dayjs(period?.startDate || '').tz('Europe/Andorra')}
                     maxDate={dayjs(period?.endDate || '').tz('Europe/Andorra')}
                     disabled={state.loading}

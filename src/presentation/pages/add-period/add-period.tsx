@@ -280,6 +280,16 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
                       startDate: date
                     }))
                   }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&:hover fieldset': {
+                        borderColor: "#F79D9F"
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: "#F79D9F"
+                      }
+                    }
+                  }}
                   disabled={state.loading}
                 />
                 <FormHelperText>
@@ -305,6 +315,16 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
                       ...state,
                       endDate: date
                     }))
+                  }}
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      '&:hover fieldset': {
+                        borderColor: "#F79D9F"
+                      },
+                      '&.Mui-focused fieldset': {
+                        borderColor: "#F79D9F"
+                      }
+                    }
                   }}
                   minDate={startDate}
                   disabled={state.loading}
