@@ -1,6 +1,6 @@
 import { Autocomplete, Card, CardContent, CardHeader, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import React from "react"
-import { RemoteExpenseResultModel, RemotePeriodListResultModel, RemotePeriodResultModel } from "../../../domain/model"
+import { RemoteExpenseResultModel, RemotePeriodCategoryResultModel, RemotePeriodListResultModel, RemotePeriodResultModel } from "../../../domain/model"
 import { LoadPeriodById, LoadPeriods } from "../../../domain/usecase"
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import { LoadingButton } from "@mui/lab";
@@ -62,6 +62,45 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  }
+
+  function CategoryRow(props: { data: RemotePeriodCategoryResultModel }) {
+    const { data } = props
+    const total = data.expenses.reduce((acc, expense) => {
+      return acc + expense.amount
+    }, 0)
+
+    return (
+      <React.Fragment>
+        <TableRow>
+          <TableCell colSpan={2}>{data.category.name}</TableCell>
+          <TableCell>{formatCurrency(data.budget)}</TableCell>
+          <TableCell>{formatCurrency(total)}</TableCell>
+
+          <TableCell component="th" scope="row" width={150}>
+              <ProgressBar value={(total / data.budget) * 100} />
+          </TableCell>
+        </TableRow>
+
+        <TableRow>
+          <TableCell colSpan={2}>Description</TableCell>
+          <TableCell>Amount</TableCell>
+          <TableCell colSpan={2}></TableCell>
+        </TableRow>
+
+        {
+          data.expenses.map((expense: RemoteExpenseResultModel) => (
+            <TableRow key={expense.id}>
+              <TableCell component="th" scope="row" colSpan={2}>
+                {expense.description}
+              </TableCell>
+              <TableCell>{formatCurrency(expense.amount)}</TableCell>
+              <TableCell colSpan={2}></TableCell>
+            </TableRow>
+          ))
+        }
+      </React.Fragment>
+    )
   }
 
   return (
@@ -145,6 +184,11 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
                             <ProgressBar value={(usedBudget / data.budget) * 100} />
                           </TableCell>
                         </TableRow>
+
+                        {data.categories.map((category) => (
+                          <CategoryRow key={category.id} data={category} />
+                        ))}
+
                       </TableBody>
                     </Table>
                   </TableContainer>
