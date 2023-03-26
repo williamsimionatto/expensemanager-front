@@ -69,6 +69,18 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
     }
   }, [loadPeriodCategories, period])
 
+  React.useEffect(() => {
+    setState((state) => ({
+      ...state,
+      formValid: 
+        state.description !== '' && 
+        state.amount > 0 && 
+        state.categoryId !== 0 && 
+        state.periodId !== 0 &&
+        state.date !== ''
+    }))
+  }, [state.description, state.amount, state.categoryId, state.periodId, state.date])
+
   const handleRedirect = (route: string, notification?: NotificationParams) => {
     navigate(route, {
       replace: true,
@@ -178,7 +190,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                   label="Description"
                   type="text"
                   value={state.description}
-                  onChange={(e) => handleChanges(e, 'name')}
+                  onChange={(e) => handleChanges(e, 'description')}
                   variant="outlined"
                   helperText={state.description === '' ? 'This field is required' : ''}
                   color={state.description === '' ? 'secondary' : 'success'}
@@ -203,7 +215,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                 />
 
                 <FormControl
-                  sx={{ m: 1, width: '25ch' }}
+                  sx={{ m: 1, width: '30ch' }}
                   variant="outlined"
                   margin='dense'
                   color={state.date === '' ? 'secondary' : 'success'}
