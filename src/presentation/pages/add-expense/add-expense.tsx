@@ -1,7 +1,7 @@
 import { LoadingButton } from "@mui/lab"
 import { Autocomplete, Button, Card, CardActions, CardContent, FormControl, FormHelperText, TextField } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import React from "react"
 import { RemotePeriodListResultModel } from "../../../domain/model"
 import { AddExpense, LoadPeriods } from "../../../domain/usecase"
@@ -169,7 +169,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
                 required
               >
                 <DatePicker
-                  label="End Date"
+                  label="Date"
                   value={date}
                   onChange={(newValue) => {
                     setDate(newValue);
@@ -180,8 +180,8 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
                       date: date
                     }))
                   }}
-                  minDate={new Dayjs(period?.startDate || '')}
-                  maxDate={new Dayjs(period?.endDate || '')}
+                  minDate={dayjs(period?.startDate || '')}
+                  maxDate={dayjs(period?.endDate || '')}
                   disabled={state.loading}
                 />
                 <FormHelperText>

@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import makeAddCategoryPage from '../main/factories/pages/add-category-factory';
+import makeAddExpensePage from '../main/factories/pages/add-expense-factory';
 import makeAddPeriodPage from '../main/factories/pages/add-period-factory';
 import makeCategoriesListPage from '../main/factories/pages/categories-list-factory';
 import makeEditCategoryPage from '../main/factories/pages/edit-category-factory';
@@ -22,6 +23,7 @@ const Router: React.FC = () => {
       <Route path='/periods/:periodId' element={makeEditPeriodPage()}></Route>
 
       <Route path='/expenses' element={makeExpenseListPage()}></Route>
+      <Route path='/expenses/add' element={makeAddExpensePage()}></Route>
     </Routes>
   );
 }

@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TablePaginationActions } from "../../components/table"
 import { ConfirmationDialog } from "../../components/confirmation-dialog/Confirmation-Dialog"
+import { useNavigate } from "react-router-dom"
 
 type Props = {
   loadExpenses: LoadExpenses
@@ -14,6 +15,8 @@ type Props = {
 }
 
 const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) => {
+  const navigate = useNavigate();
+
   const [loading, setLoading] = React.useState(true);
   const [showDialogConfirmation, setShowDialogConfirmation] = React.useState(false)
 
@@ -59,6 +62,10 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const handleRedirect = (route: string) => {
+    navigate(route);
+  }
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -112,6 +119,7 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
                 variant="outlined"
                 className='button-new'
                 endIcon={<AddIcon className='icon' />}
+                onClick={() => handleRedirect('/expenses/add')}
               >
                 New
               </Button>
