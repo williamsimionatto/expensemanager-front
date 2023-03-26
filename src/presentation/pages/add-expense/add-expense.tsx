@@ -1,10 +1,13 @@
-import { Autocomplete, Card, CardContent, FormControl, FormHelperText, TextField } from "@mui/material"
+import { LoadingButton } from "@mui/lab"
+import { Autocomplete, Button, Card, CardActions, CardContent, FormControl, FormHelperText, TextField } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import { Dayjs } from "dayjs"
 import React from "react"
 import { RemotePeriodListResultModel } from "../../../domain/model"
 import { AddExpense, LoadPeriods } from "../../../domain/usecase"
 import { NotificationParams } from "../../components/notification"
+import SaveIcon from '@mui/icons-material/Save';
+import { useNavigate } from "react-router-dom"
 
 type Props = {
   addExpense: AddExpense
@@ -18,6 +21,7 @@ type State = AddExpense.Params & {
 }
 
 const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
+  const navigate = useNavigate();
   const [periods, setPeriods] = React.useState<RemotePeriodListResultModel[]>([])
   const [period, setPeriod] = React.useState<RemotePeriodListResultModel | null>(null)
   const [date, setDate] = React.useState<Dayjs | null>(null);
@@ -43,6 +47,15 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
     })
   }, [loadPeriods])
 
+  const handleRedirect = (route: string, notification?: NotificationParams) => {
+    navigate(route, {
+      replace: true,
+      state: {
+        notification
+      }
+    })
+  }
+
   const handleChanges = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     field: string
@@ -59,6 +72,34 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
       ...state,
       [field]: value
     }))
+  }
+
+  const handleSubmit = async () => {
+    setState((state) => ({
+      ...state,
+      loading: true
+    }))
+
+    await addExpense
+      .add(state)
+      .then(() => {
+        handleRedirect('/expenses', {
+          message: 'Expense added successfully',
+          type: 'success',
+          open: true,
+        })
+      })
+      .catch((error) => {
+        setState((state) => ({
+          ...state,
+          loading: false,
+          notification: {
+            message: error.message,
+            type: 'error',
+            open: true,
+          }
+        }))
+      })
   }
 
   return (
@@ -149,6 +190,30 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
               </FormControl>
             </form>
           </CardContent>
+
+          <CardActions className='d-flex-right card-footer'>
+            <Button
+              color="secondary"
+              onClick={() => handleRedirect('/expenses', undefined)}
+              className="button-cancel"
+              variant='outlined'
+            >
+              <span className='button-label'>Cancel</span>
+            </Button>
+
+            <LoadingButton
+              color="secondary"
+              loadingPosition="end"
+              endIcon={<SaveIcon className='icon'/>}
+              variant="contained"
+              className="button-new"
+              loading={state.loading}
+              disabled={!state.formValid}
+              onClick={handleSubmit}
+            >
+              <span className='button-label'>Save</span>
+            </LoadingButton>
+          </CardActions>
         </Card>
       </div>
     </>
