@@ -46,6 +46,10 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
     loadPeriods
       .load()
       .then((periods) => {
+        periods.sort((a, b) => {
+          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        })
+
         setData(periods)
         setLoading(false)
       })
@@ -82,6 +86,12 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
   }
 
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      timeZone: 'UTC',
+    })
+  }
+
   return (
     <>
       <NotficationToaster
@@ -116,6 +126,7 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
                   <TableRow>
                     <TableCell>Code</TableCell>
                     <TableCell>Name</TableCell>
+                    <TableCell>Period</TableCell>
                     <TableCell>Budget</TableCell>
                     <TableCell>Used Budget</TableCell>
                     <TableCell></TableCell>
@@ -146,6 +157,10 @@ const PeriodList: React.FC<Props> = ({ loadPeriods }: Props) => {
 
                           <TableCell component="th" scope="row" width={150}>
                             {row.name}
+                          </TableCell>
+
+                          <TableCell component="th" scope="row" width={150}>
+                            {formatDate(row.startDate)} - {formatDate(row.endDate)}
                           </TableCell>
 
                           <TableCell component="th" scope="row" width={150}>

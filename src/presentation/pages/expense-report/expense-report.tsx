@@ -44,16 +44,14 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
     loadPeriods
       .load()
       .then((result) => {
-        // sort by start date
         result.sort((a, b) => {
-          return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
         })
         setPeriods(result)
         const usedBudget = sumUsedBudgetPeriod()
         setUsedBudget(usedBudget)
       })
   }, [loadPeriods, sumUsedBudgetPeriod])
-
 
   const handleGenerateReport = async () => {
     setLoading(true)
