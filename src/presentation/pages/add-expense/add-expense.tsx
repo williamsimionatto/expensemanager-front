@@ -8,7 +8,7 @@ import timezone from "dayjs/plugin/timezone"
 import React from "react"
 import { RemoteCategoryResultModel, RemotePeriodListResultModel } from "../../../domain/model"
 import { AddExpense, LoadPeriodCategories, LoadPeriods } from "../../../domain/usecase"
-import { NotificationParams } from "../../components/notification"
+import { NotficationToaster, NotificationParams } from "../../components/notification"
 import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from "react-router-dom"
 
@@ -138,6 +138,21 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
 
   return (
     <>
+      <NotficationToaster
+        type={state.notification.type}
+        message={state.notification.message}
+        open={state.notification.open}
+        setOpen={() => {
+          setState((state) => ({
+            ...state,
+            notification: {
+              ...state.notification,
+              open: false
+            }
+          }))
+        }}
+      />
+
       <div className="container-app">
         <Card>
           <CardContent style={{
@@ -152,7 +167,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                   options={periods}
                   value={period}
                   getOptionLabel={(option) => option.name}
-                  sx={{ width: 300, marginTop: '1%', marginRight: '1%' }}
+                  sx={{ width: 300, marginTop: '1.4%', marginRight: '1%' }}
                   onChange={(e, value) => {
                     setPeriod(value)
                     setState({
@@ -170,7 +185,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                   options={categories}
                   value={category}
                   getOptionLabel={(option) => option.name}
-                  sx={{ width: 300, marginTop: '1%', marginRight: '1%' }}
+                  sx={{ width: 300, marginTop: '1.4%', marginRight: '1%' }}
                   onChange={(e, value) => {
                     setCategory(value)
                     setState({
@@ -184,22 +199,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                 />
 
                 <TextField
-                  sx={{ m: 1, width: '25ch' }}
-                  margin="dense"
-                  id="description"
-                  label="Description"
-                  type="text"
-                  value={state.description}
-                  onChange={(e) => handleChanges(e, 'description')}
-                  variant="outlined"
-                  helperText={state.description === '' ? 'This field is required' : ''}
-                  color={state.description === '' ? 'secondary' : 'success'}
-                  disabled={state.loading}
-                  required
-                />
-
-                <TextField
-                  sx={{ m: 1, width: '25ch' }}
+                  sx={{ m:1, mt: 2, width: '25ch', maxWidth: '30ch' }}
                   margin="dense"
                   id="amount"
                   label="Amount (R$)"
@@ -215,7 +215,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                 />
 
                 <FormControl
-                  sx={{ m: 1, width: '30ch' }}
+                  sx={{ m:1, mt: 2, width: '30ch' }}
                   variant="outlined"
                   margin='dense'
                   color={state.date === '' ? 'secondary' : 'success'}
@@ -241,6 +241,21 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                     {state.date === '' ? 'This field is required' : ''}
                   </FormHelperText>
                 </FormControl>
+
+                <TextField
+                  sx={{ m: 1, ml: 0, width: '35ch' }}
+                  margin="dense"
+                  id="description"
+                  label="Description"
+                  type="text"
+                  value={state.description}
+                  onChange={(e) => handleChanges(e, 'description')}
+                  variant="outlined"
+                  helperText={state.description === '' ? 'This field is required' : ''}
+                  color={state.description === '' ? 'secondary' : 'success'}
+                  disabled={state.loading}
+                  required
+                />
               </div>
             </form>
           </CardContent>

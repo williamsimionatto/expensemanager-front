@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TablePaginationActions } from "../../components/table"
 import { ConfirmationDialog } from "../../components/confirmation-dialog/Confirmation-Dialog"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 type Props = {
   loadExpenses: LoadExpenses
@@ -16,6 +16,7 @@ type Props = {
 
 const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [loading, setLoading] = React.useState(true);
   const [showDialogConfirmation, setShowDialogConfirmation] = React.useState(false)
@@ -30,6 +31,21 @@ const ExpenseList: React.FC<Props> = ({ loadExpenses, deleteExpense }: Props) =>
     type: 'success',
     open: false,
   });
+
+  React.useEffect(() => {
+    if (location.state) {
+      const notification = location.state.notification
+      if (notification) {
+        setShowNotification({
+          message: notification.message,
+          type: notification.type,
+          open: true,
+        })
+      }
+    }
+
+    navigate(location.pathname, { state: null})
+  }, [location.state, location.pathname, navigate])
 
   React.useEffect(() => {
     loadExpenses
