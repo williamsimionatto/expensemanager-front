@@ -2,6 +2,9 @@ import { LoadingButton } from "@mui/lab"
 import { Autocomplete, Button, Card, CardActions, CardContent, FormControl, FormHelperText, TextField } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import dayjs, { Dayjs } from "dayjs"
+import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
+
 import React from "react"
 import { RemotePeriodListResultModel } from "../../../domain/model"
 import { AddExpense, LoadPeriods } from "../../../domain/usecase"
@@ -21,6 +24,9 @@ type State = AddExpense.Params & {
 }
 
 const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
+
   const navigate = useNavigate();
   const [periods, setPeriods] = React.useState<RemotePeriodListResultModel[]>([])
   const [period, setPeriod] = React.useState<RemotePeriodListResultModel | null>(null)
@@ -108,86 +114,87 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods }) => {
         <Card>
           <CardContent style={{
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'row'
           }}>
             <form>
-              <Autocomplete
-                disablePortal={false}
-                id="period_combo_box"
-                options={periods}
-                value={period}
-                getOptionLabel={(option) => option.name}
-                sx={{ width: 300, marginTop: '1%' , marginRight: '3%' }}
-                onChange={(e, value) => {
-                  setPeriod(value)
-                  setState({
-                    ...state,
-                    periodId: value?.id || 0
-                  })
-                }}
-                renderInput={(params) => <TextField {...params} label="Period" />}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-              />
-
-              <TextField
-                sx={{ m: 1, width: '25ch' }}
-                autoFocus
-                margin="dense"
-                id="description"
-                label="Description"
-                type="text"
-                value={state.description}
-                onChange={(e) => handleChanges(e, 'name')}
-                variant="outlined"
-                helperText={state.description === '' ? 'This field is required' : ''}
-                color={state.description === '' ? 'secondary' : 'success'}
-                disabled={state.loading}
-                required
-              />
-
-              <TextField
-                sx={{ m: 1, width: '25ch' }}
-                margin="dense"
-                id="amount"
-                label="Amount (R$)"
-                value={state.amount}
-                type="text"
-                onChange={(e) => handleChanges(e, 'amount')}
-                variant="outlined"
-                helperText={state.amount <= 0 ? 'This field is required' : ''}
-                color={state.amount <= 0 ? 'secondary' : 'success'}
-                disabled={state.loading}
-                required
-                inputProps={{min: 0, style: { textAlign: 'right' }}}
-              />
-
-              <FormControl
-                sx={{ m: 1, width: '25ch' }}
-                variant="outlined"
-                margin='dense'
-                color={state.date === '' ? 'secondary' : 'success'}
-                required
-              >
-                <DatePicker
-                  label="Date"
-                  value={date}
-                  onChange={(newValue) => {
-                    setDate(newValue);
-                    const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
-
-                    setState((state) => ({
+              <div className="d-flex">
+                <Autocomplete
+                  disablePortal={false}
+                  id="period_combo_box"
+                  options={periods}
+                  value={period}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ width: 300, marginTop: '1%', marginRight: '1%' }}
+                  onChange={(e, value) => {
+                    setPeriod(value)
+                    setState({
                       ...state,
-                      date: date
-                    }))
+                      periodId: value?.id || 0
+                    })
                   }}
-                  minDate={dayjs(period?.startDate || '')}
-                  maxDate={dayjs(period?.endDate || '')}
-                  disabled={state.loading}
+                  renderInput={(params) => <TextField {...params} label="Period" />}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
                 />
-                <FormHelperText>
-                  {state.date === '' ? 'This field is required' : ''}
-                </FormHelperText>
-              </FormControl>
+
+                <TextField
+                  sx={{ m: 1, width: '25ch' }}
+                  margin="dense"
+                  id="description"
+                  label="Description"
+                  type="text"
+                  value={state.description}
+                  onChange={(e) => handleChanges(e, 'name')}
+                  variant="outlined"
+                  helperText={state.description === '' ? 'This field is required' : ''}
+                  color={state.description === '' ? 'secondary' : 'success'}
+                  disabled={state.loading}
+                  required
+                />
+
+                <TextField
+                  sx={{ m: 1, width: '25ch' }}
+                  margin="dense"
+                  id="amount"
+                  label="Amount (R$)"
+                  value={state.amount}
+                  type="text"
+                  onChange={(e) => handleChanges(e, 'amount')}
+                  variant="outlined"
+                  helperText={state.amount <= 0 ? 'This field is required' : ''}
+                  color={state.amount <= 0 ? 'secondary' : 'success'}
+                  disabled={state.loading}
+                  required
+                  inputProps={{min: 0, style: { textAlign: 'right' }}}
+                />
+
+                <FormControl
+                  sx={{ m: 1, width: '25ch' }}
+                  variant="outlined"
+                  margin='dense'
+                  color={state.date === '' ? 'secondary' : 'success'}
+                  required
+                >
+                  <DatePicker
+                    label="Date"
+                    value={date}
+                    onChange={(newValue) => {
+                      setDate(newValue);
+                      const date = new Date((newValue?.toDate() || new Date())).toLocaleDateString('en-CA', { timeZone: 'Europe/Andorra' })
+
+                      setState((state) => ({
+                        ...state,
+                        date: date
+                      }))
+                    }}
+                    minDate={dayjs(period?.startDate || '').tz('Europe/Andorra')}
+                    maxDate={dayjs(period?.endDate || '').tz('Europe/Andorra')}
+                    disabled={state.loading}
+                  />
+                  <FormHelperText>
+                    {state.date === '' ? 'This field is required' : ''}
+                  </FormHelperText>
+                </FormControl>
+              </div>
             </form>
           </CardContent>
 
