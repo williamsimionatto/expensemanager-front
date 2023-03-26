@@ -23,7 +23,7 @@ const menuItems = [
   {
     name: "Reports",
     icon: "bar_chart",
-    route: "/reports",
+    route: "/expenses/report",
   }
 ];
 
