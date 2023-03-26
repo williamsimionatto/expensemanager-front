@@ -114,7 +114,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
         >
           <Autocomplete
             disablePortal={false}
-            id="combo-box-demo"
+            id="categories_select"
             options={props.categories}
             value={selectedCategory}
             sx={{ width: 300, marginTop: '1%' , marginRight: '3%' }}

@@ -9,7 +9,7 @@ export namespace AddExpense {
     categoryId: number
     description: string
     amount: number
-    date: Date
+    date: string
     periodId: number
   }
 
