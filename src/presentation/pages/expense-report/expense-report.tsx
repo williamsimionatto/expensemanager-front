@@ -1,11 +1,15 @@
-import { Autocomplete, Card, CardContent, CardHeader, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
+import { Autocomplete, Card, CardContent, CardHeader, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import React from "react"
 import { RemoteExpenseResultModel, RemotePeriodCategoryResultModel, RemotePeriodListResultModel, RemotePeriodResultModel } from "../../../domain/model"
 import { LoadPeriodById, LoadPeriods } from "../../../domain/usecase"
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import { LoadingButton } from "@mui/lab";
-import './style/expense-report.css'
 import ProgressBar from "../../components/progessbar/ProgressBar";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { Box } from "@mui/system";
+
+import './style/expense-report.css'
 
 type Props = { 
   loadPeriods: LoadPeriods
@@ -65,41 +69,73 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
   }
 
   function CategoryRow(props: { data: RemotePeriodCategoryResultModel }) {
+    const [rowOpen, setRowOpen] = React.useState(false);
     const { data } = props
     const total = data.expenses.reduce((acc, expense) => {
       return acc + expense.amount
     }, 0)
 
     return (
-      <React.Fragment>
+      <>
         <TableRow>
-          <TableCell colSpan={2}>{data.category.name}</TableCell>
+          <TableCell>
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setRowOpen(!rowOpen)}
+            >
+              {rowOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}{data.category.name}
+            </IconButton>
+          </TableCell>
+
+          <TableCell></TableCell>
           <TableCell>{formatCurrency(data.budget)}</TableCell>
           <TableCell>{formatCurrency(total)}</TableCell>
 
           <TableCell component="th" scope="row" width={150}>
-              <ProgressBar value={(total / data.budget) * 100} />
+            <ProgressBar value={(total / data.budget) * 100} />
           </TableCell>
         </TableRow>
 
-        <TableRow>
-          <TableCell colSpan={2}>Description</TableCell>
-          <TableCell>Amount</TableCell>
-          <TableCell colSpan={2}></TableCell>
-        </TableRow>
 
-        {
-          data.expenses.map((expense: RemoteExpenseResultModel) => (
-            <TableRow key={expense.id}>
-              <TableCell component="th" scope="row" colSpan={2}>
-                {expense.description}
-              </TableCell>
-              <TableCell>{formatCurrency(expense.amount)}</TableCell>
-              <TableCell colSpan={2}></TableCell>
-            </TableRow>
-          ))
-        }
-      </React.Fragment>
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+            <Collapse in={rowOpen} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Table 
+                  size="small"
+                  sx={{
+                    marginLeft: 0,
+                    borderBottom: 'none'
+                  }}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Description</TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell>Amount</TableCell>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {
+                      data.expenses.map((expense: RemoteExpenseResultModel) => (
+                        <TableRow key={expense.id}>
+                          <TableCell component="th" scope="row" width={150}>
+                            {expense.description}
+                          </TableCell>
+                          <TableCell width={120}>{new Date(expense.date).toLocaleDateString('pt-BR')}</TableCell>
+                          <TableCell width={120}>{formatCurrency(expense.amount)}</TableCell>
+                        </TableRow>
+                      ))
+                    }
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      </>
     )
   }
 
@@ -164,7 +200,10 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
                           key={data.id}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                          <TableCell component="th" scope="row" width={150}>
+                          <TableCell component="th" scope="row" width={150} sx={{
+                            fontWeight: 'bold',
+                            fontSize: '1.2rem'
+                          }}>
                             {data.name}
                           </TableCell>
 
