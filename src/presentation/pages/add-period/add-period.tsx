@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
+import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText } from "@mui/material"
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import { AddPeriod, LoadCategories } from '../../../domain/usecase';
@@ -9,6 +9,7 @@ import { NotficationToaster, NotificationParams } from '../../components/notific
 import { RemoteCategoryResultModel } from '../../../domain/model';
 import SaveIcon from '@mui/icons-material/Save';
 import MasterDetail from './components/MasterDetail';
+import Input from '../../components/input/Input';
 
 type Props = {
   addPeriod: AddPeriod
@@ -229,7 +230,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
             flexDirection: 'column'
           }}>
             <form>
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 autoFocus
                 margin="dense"
@@ -245,7 +246,7 @@ const AddPeriodForm: React.FC<Props> = ({addPeriod, loadCategories} : Props) => 
                 required
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="budget"

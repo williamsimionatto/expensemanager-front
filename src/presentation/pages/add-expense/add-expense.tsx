@@ -11,6 +11,7 @@ import { AddExpense, LoadPeriodCategories, LoadPeriods } from "../../../domain/u
 import { NotficationToaster, NotificationParams } from "../../components/notification"
 import SaveIcon from '@mui/icons-material/Save';
 import { useNavigate } from "react-router-dom"
+import Input from "../../components/input/Input"
 
 type Props = {
   addExpense: AddExpense
@@ -198,7 +199,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                   disabled={period === null}
                 />
 
-                <TextField
+                <Input
                   sx={{ m:1, mt: 2, width: '25ch', maxWidth: '30ch' }}
                   margin="dense"
                   id="amount"
@@ -242,7 +243,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                   </FormHelperText>
                 </FormControl>
 
-                <TextField
+                <Input
                   sx={{ m: 1, ml: 0, width: '35ch' }}
                   margin="dense"
                   id="description"

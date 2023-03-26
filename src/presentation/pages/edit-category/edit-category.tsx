@@ -1,10 +1,11 @@
 import { LoadingButton } from "@mui/lab"
-import { Button, Card, CardActions, CardContent, CardHeader, TextField } from "@mui/material"
+import { Button, Card, CardActions, CardContent, CardHeader } from "@mui/material"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { EditCategory, LoadCategoryById } from "../../../domain/usecase"
 import { NotficationToaster, NotificationParams } from "../../components/notification"
 import SaveIcon from '@mui/icons-material/Save';
+import Input from "../../components/input/Input"
 
 type Props = {
   editCategory: EditCategory
@@ -159,7 +160,7 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
 
           <CardContent>
             <form>
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="id"
@@ -170,7 +171,7 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
                 disabled={true}
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="name"
@@ -185,7 +186,7 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
                 required
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '75ch' }}
                 margin="dense"
                 id="description"

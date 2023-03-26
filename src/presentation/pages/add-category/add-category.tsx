@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Card, CardActions, CardContent, CardHeader, TextField } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader } from '@mui/material';
 import * as React from 'react';
 import { AddCategory } from '../../../domain/usecase';
 import SaveIcon from '@mui/icons-material/Save';
@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import './style/add-category.css'
 import { NotficationToaster, NotificationParams } from '../../components/notification';
-import { withStyles } from '@mui/styles';
+import Input from '../../components/input/Input';
 
 type Props = {
   addCategory: AddCategory
@@ -22,28 +22,6 @@ type State = AddCategory.Params & {
     open: boolean
   }
 }
-
-const Input = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: 'white',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#F79D9F',
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: 'white',
-      },
-      '&:hover fieldset': {
-        borderColor: 'white',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#F79D9F',
-      }
-    },
-  },
-})(TextField);
 
 const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
   const navigate = useNavigate();
