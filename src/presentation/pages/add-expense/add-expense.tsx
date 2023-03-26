@@ -31,8 +31,10 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
   const navigate = useNavigate();
   const [periods, setPeriods] = React.useState<RemotePeriodListResultModel[]>([])
   const [categories, setCategories] = React.useState<RemoteCategoryResultModel[]>([])
+
   const [period, setPeriod] = React.useState<RemotePeriodListResultModel | null>(null)
   const [category, setCategory] = React.useState<RemoteCategoryResultModel | null>(null)
+
   const [date, setDate] = React.useState<Dayjs | null>(null);
 
   const [state, setState] = React.useState<State>({
@@ -58,9 +60,12 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
 
   React.useEffect(() => {
     if (period) {
-      loadPeriodCategories.load(period.id.toString()).then((result) => {
-        setCategories(result)
-      })
+      loadPeriodCategories
+        .load(period.id.toString())
+        .then((result) => {
+          const categories = result.map((item) => item.category)
+          setCategories(categories)
+        })
     }
   }, [loadPeriodCategories, period])
 
@@ -128,7 +133,7 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
             flexDirection: 'row'
           }}>
             <form>
-              <div className="d-flex">
+              <div className="d-flex wrapp">
                 <Autocomplete
                   disablePortal={false}
                   id="period_combo_box"
@@ -145,6 +150,25 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
                   }}
                   renderInput={(params) => <TextField {...params} label="Period" />}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
+                />
+
+                <Autocomplete
+                  disablePortal={false}
+                  id="category_combo_box"
+                  options={categories}
+                  value={category}
+                  getOptionLabel={(option) => option.name}
+                  sx={{ width: 300, marginTop: '1%', marginRight: '1%' }}
+                  onChange={(e, value) => {
+                    setCategory(value)
+                    setState({
+                      ...state,
+                      categoryId: value?.id || 0
+                    })
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Categories" />}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  disabled={period === null}
                 />
 
                 <TextField

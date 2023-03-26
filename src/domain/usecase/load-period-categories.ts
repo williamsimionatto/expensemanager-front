@@ -1,9 +1,9 @@
-import { RemoteCategoryResultModel } from "../model"
+import { RemotePeriodCategoryResultModel } from "../model"
 
 export interface LoadPeriodCategories {
   load: (periodId: string) => Promise<LoadPeriodCategories.Result>
 }
 
 export namespace LoadPeriodCategories {
-  export type Result = RemoteCategoryResultModel[]
+  export type Result = RemotePeriodCategoryResultModel[]
 }
