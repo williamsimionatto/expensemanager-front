@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Card, CardActions, CardContent, CardHeader, TextField } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader } from '@mui/material';
 import * as React from 'react';
 import { AddCategory } from '../../../domain/usecase';
 import SaveIcon from '@mui/icons-material/Save';
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 import './style/add-category.css'
 import { NotficationToaster, NotificationParams } from '../../components/notification';
+import Input from '../../components/input/Input';
 
 type Props = {
   addCategory: AddCategory
@@ -120,7 +121,7 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
 
           <CardContent>
             <form>
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 autoFocus
                 margin="dense"
@@ -136,7 +137,7 @@ const AddCategoryForm: React.FC<Props> = ( {addCategory}: Props ) => {
                 required
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '75ch' }}
                 margin="dense"
                 id="description"

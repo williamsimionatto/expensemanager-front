@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogTitle, TextField } from "@mui/material"
+import { Alert, AlertTitle, Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogTitle } from "@mui/material"
 import React from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { RemoteCategoryResultModel } from "../../../domain/model"
@@ -7,6 +7,7 @@ import { NotficationToaster, NotificationParams } from "../../components/notific
 import MasterDetail from "../add-period/components/MasterDetail"
 import { LoadingButton } from "@mui/lab"
 import SaveIcon from '@mui/icons-material/Save';
+import Input from "../../components/input/Input"
 
 type Props = {
   editPeriod: EditPeriod
@@ -326,7 +327,7 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
             flexDirection: 'column'
           }}>
             <form>
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="id"
@@ -337,7 +338,7 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
                 disabled={true}
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 autoFocus
                 margin="dense"
@@ -353,7 +354,7 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
                 required
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="budget"
@@ -369,7 +370,7 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
                 inputProps={{min: 0, style: { textAlign: 'right' }}}
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="startDate"
@@ -381,7 +382,7 @@ const EditPeriodForm: React.FC<Props> = ({ editPeriod, loadPeriodById, loadCateg
                 disabled={true}
               />
 
-              <TextField
+              <Input
                 sx={{ m: 1, width: '25ch' }}
                 margin="dense"
                 id="endDate"

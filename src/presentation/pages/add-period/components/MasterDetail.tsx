@@ -8,6 +8,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './MasterDetail.css'
+import Input from "../../../components/input/Input";
 
 type Props = {
   title: string
@@ -127,7 +128,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
             renderInput={(params) => <TextField {...params} label="Categories"/>}
           />
 
-          <TextField
+          <Input
             sx={{ width: '30ch' }}
             margin="dense"
             id="budget"
@@ -219,7 +220,7 @@ const MasterDetail: React.FC<Props> = (props: Props) => {
                           onClick={() => handleEditCategory(data)}
                         >
                           <EditIcon 
-                            htmlColor='#9d5bff'
+                            htmlColor='#F64348'
                             fontSize='small'
                           />
                         </Fab>

@@ -7,12 +7,6 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -28,26 +22,17 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .card-header {
-  border-bottom: 1px solid #9d5bff73;
+  border-bottom: 1px solid #F6434873;
 }
 
 .card-footer {
-  border-top: 1px solid #9d5bff73;
+  border-top: 1px solid #F6434873;
 }
 
 .button-new {
-  background-color: #9d5bff !important;
-  border-color: #9d5bffcb !important;
+  background-color: #F64348 !important;
+  border-color: #F64348cb !important;
   color: #ffffff !important;
 }
 
@@ -61,11 +46,11 @@
 
 .button-cancel {
   color: #ffffff !important;
-  border-color: #9d5bff73 !important;
+  border-color: #F6434873 !important;
 }
 
 .button-cancel:hover {
-  background-color: #9d5bff !important;
+  background-color: #F64348 !important;
   color: #ffffff !important;
 }
 
@@ -81,4 +66,12 @@
 
 .wrapp {
   flex-wrap: wrap;
+}
+
+.css-1jgdtkb-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #F79D9F !important;
+}
+
+.css-axj3wf-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: white !important;
 }

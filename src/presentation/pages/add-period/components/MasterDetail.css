@@ -1,5 +1,5 @@
 .categories {
-  border-top: 1px solid #9d5bff73;
+  border-top: 1px solid #F6434873;
 }
 
 .master-detail {
@@ -24,21 +24,21 @@
 
 .master-detail-title {
   border-radius: 4px 4px 0 0;
-  border: 1px solid #9d5bff73;
+  border: 1px solid #F6434873;
   padding: 5px 10px;
   border-bottom: none;
 }
 
 .master-detail-info {
-  border: 1px solid #9d5bff73;
+  border: 1px solid #F6434873;
   border-radius: 4px 4px 0 0;
 }
 
 .table {
-  border: 1px solid #9d5bff73 !important;
+  border: 1px solid #F6434873 !important;
 }
 
 .column {
-  border-right: 1px solid  #9d5bff73 !important;
-  border-bottom: 1px solid  #9d5bff73 !important;
+  border-right: 1px solid  #F6434873 !important;
+  border-bottom: 1px solid  #F6434873 !important;
 }
