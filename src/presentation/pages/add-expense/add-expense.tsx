@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab"
-import { Autocomplete, Button, Card, CardActions, CardContent, FormControl, FormHelperText, TextField } from "@mui/material"
+import { Autocomplete, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormHelperText, TextField } from "@mui/material"
 import { DatePicker } from "@mui/x-date-pickers"
 import dayjs, { Dayjs } from "dayjs"
 import utc from "dayjs/plugin/utc"
@@ -156,6 +156,8 @@ const AddExpenseForm: React.FC<Props> = ({ addExpense, loadPeriods, loadPeriodCa
 
       <div className="container-app">
         <Card>
+          <CardHeader title="Add Expense" className="card-header" />
+
           <CardContent style={{
             display: 'flex',
             flexDirection: 'row'
