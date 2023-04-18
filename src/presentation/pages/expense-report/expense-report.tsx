@@ -76,6 +76,11 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
       })
       .catch((error) => {
         setLoading(false)
+        setShowNotification({
+          message: 'Error loading report data',
+          type: 'error',
+          open: true,
+        })
       })
   }
 
