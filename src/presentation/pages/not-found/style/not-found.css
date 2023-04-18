@@ -1,0 +1,24 @@
+.not-found-container {
+  width: 100%;
+  padding: 6rem;
+  text-align: center;
+}
+
+.not-found-container > img {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
+.not-found-container > h1 {
+  color: #f64348;
+  font-weight: 700;
+  font-size: 34px;
+}
+
+.not-found-container > p {
+  color: #f64348cc;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 140%;
+}

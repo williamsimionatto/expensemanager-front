@@ -8,10 +8,12 @@ import makeEditPeriodPage from '../main/factories/pages/edit-period-factory';
 import makeExpenseReportPage from '../main/factories/pages/expense-report-factory';
 import makeExpenseListPage from '../main/factories/pages/expenses-list-factory';
 import makePeriodsListPage from '../main/factories/pages/periods-list-factory';
+import makeNotFoundPage from '../main/factories/pages/not-found-factory';
 
 const Router: React.FC = () => {
   return (
     <Routes>
+      <Route path='/' element={makeExpenseListPage()}></Route>
       <Route path='/categories' element={makeCategoriesListPage()}/>
       <Route path='/categories/add' element={makeAddCategoryPage()} />
       <Route 
@@ -27,6 +29,8 @@ const Router: React.FC = () => {
       <Route path='/expenses/add' element={makeAddExpensePage()}></Route>
 
       <Route path='/expenses/report' element={makeExpenseReportPage()}></Route>
+
+      <Route path='*' element={makeNotFoundPage()}></Route>
     </Routes>
   );
 }
