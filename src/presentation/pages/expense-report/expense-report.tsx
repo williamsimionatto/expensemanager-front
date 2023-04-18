@@ -8,6 +8,7 @@ import ProgressBar from "../../components/progessbar/ProgressBar";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Box } from "@mui/system";
+import { NotficationToaster, NotificationParams } from "../../components/notification";
 
 import './style/expense-report.css'
 
@@ -22,6 +23,12 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
   const [period, setPeriod] = React.useState<RemotePeriodListResultModel | null>(null)
   const [data, setData] = React.useState<RemotePeriodResultModel | null>(null)
   const [usedBudget, setUsedBudget] = React.useState(0)
+
+  const [showNotification, setShowNotification] = React.useState<NotificationParams>({
+    message: '',
+    type: 'success',
+    open: false,
+  });
 
   const sumUsedBudgetPeriod = React.useCallback(() => {
     const categories = data?.categories.map((category) => category)
@@ -50,6 +57,12 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
         setPeriods(result)
         const usedBudget = sumUsedBudgetPeriod()
         setUsedBudget(usedBudget)
+      }).catch((error) => {
+        setShowNotification({
+          message: 'Error loading periods',
+          type: 'error',
+          open: true,
+        })
       })
   }, [loadPeriods, sumUsedBudgetPeriod])
 
@@ -143,6 +156,13 @@ const ExpenseReport: React.FC<Props> = ({ loadPeriods, loadPeriodById }: Props) 
 
   return (
     <>
+      <NotficationToaster
+        type={showNotification.type}
+        message={showNotification.message}
+        open={showNotification.open}
+        setOpen={() => setShowNotification({ ...showNotification, open: false })}
+      />
+
       <div className="container-app">
         <Card>
           <CardHeader
