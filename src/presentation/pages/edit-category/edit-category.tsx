@@ -73,6 +73,11 @@ const EditCategoryForm: React.FC<Props> = ({ editCategory, loadCategoryById }: P
     validate()
   }, [loadCategoryById, validate, state.id])
 
+
+  React.useEffect(() => {
+    validate()
+  }, [state.name, state.description, validate])
+
   const handleRedirect = (route: string, notification?: NotificationParams) => {
     navigate(route, {
       replace: true,
