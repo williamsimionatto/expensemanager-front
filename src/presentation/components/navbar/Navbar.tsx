@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./styles.scss";
 
 import { Dispatch, SetStateAction } from "react";
 
@@ -12,11 +12,11 @@ export const Navbar = ({
       onClick={() => setIsOpen(true)}
       className="burger material-symbols-outlined"
     > menu </button>
-    <div className="logo"></div>
-    <div className="center"></div>
 
-    <nav>
-      <i className="material-symbols-outlined">notifications</i>
-    </nav>
+    <div className="center">
+      <h1 className="title">
+        Manage your financesin one place
+      </h1>
+    </div>
   </nav>
 );

@@ -1,0 +1,24 @@
+.button-new {
+  background-color: #F64348 !important;
+  border-color: #F64348cb !important;
+  color: #ffffff !important;
+}
+
+.button-new:disabled {
+  opacity: 0.5;
+}
+
+.icon:hover,
+span.button-label {
+  color: #ffffff !important;
+}
+
+.button-cancel {
+  color: #ffffff !important;
+  border-color: #F6434873 !important;
+}
+
+.button-cancel:hover {
+  background-color: #F64348 !important;
+  color: #ffffff !important;
+}

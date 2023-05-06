@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "../button";
 import { Icon } from "../icon";
 
-import "./styles.css";
+import "./styles.scss";
 
 const menuItems = [
   {

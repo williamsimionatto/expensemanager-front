@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #202124;
 }
 
 code {
@@ -16,22 +17,28 @@ fieldset:focus-within {
   border-color: #F64348 !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-
 a {
   color: #F64348;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.d-flex-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.wrapp {
+  flex-wrap: wrap;
+}
+
+.css-1jgdtkb-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #F79D9F !important;
+}
+
+.css-axj3wf-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: white !important;
 }

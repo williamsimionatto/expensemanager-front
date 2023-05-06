@@ -1,13 +1,3 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #202124;
-  font-family: "Euclid Circular A";
-}
-
 .sidebar button {
   position: relative;
   overflow: hidden;
@@ -88,7 +78,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgb(0 0 0 / 40%);
+  background: rgba(14, 13, 15, 0.5);
   visibility: hidden;
   opacity: 0;
   transition: 0.3s;
