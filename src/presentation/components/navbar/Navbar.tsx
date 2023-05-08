@@ -15,7 +15,7 @@ export const Navbar = ({
 
     <div className="center">
       <h1 className="title">
-        Manage your financesin one place
+        Manage your finances in one place
       </h1>
     </div>
   </nav>
