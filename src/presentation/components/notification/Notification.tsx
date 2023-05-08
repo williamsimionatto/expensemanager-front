@@ -15,14 +15,14 @@ export type NotificationParams = {
   open: boolean;
 }
 
-export const NotficationToaster = (
-  props: {
-    message: string;
-    type: 'success' | 'error' | 'info' | 'warning';
-    open: boolean;
-    setOpen: () => void;
-  }
-) => {
+export type Props = {
+  message: string;
+  type: 'success' | 'error' | 'info' | 'warning';
+  open: boolean;
+  setOpen: () => void;
+}
+
+export const NotficationToaster = (props: Props) => {
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
